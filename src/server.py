@@ -66,7 +66,7 @@ def run():
         reti.execute()
         reti_states[i] = {
             "instruction": c.decompile(reti._register[I]),
-            "registers": dict(zip(("PC", "IN1", "IN2", "ACC", "SP", "CS", "DS", "I"), reti._register)),
+            "registers": dict(zip(("PC", "IN1", "IN2", "ACC", "SP", "BAF", "CS", "DS", "I"), reti._register)),
             "sram": reti.sram.copy()
         }
         if i % 50 == 0:
