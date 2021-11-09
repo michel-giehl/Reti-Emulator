@@ -48,5 +48,5 @@ Executes ReTi code and displays it.
 - [x] `JGE i` JUMP>=
 - [x] `JL i` JUMP<
 - [x] `JLE i` JUMP<=
-- [] `INT i`
-- [] `RTI`
+- [ ] `INT i`
+- [ ] `RTI`
