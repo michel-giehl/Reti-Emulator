@@ -1,0 +1,42 @@
+# T = Typ
+# S = Spezifikation
+# P = Parameter i
+# TTSSSSSS SSPPPPPP PPPPPPPP PPPPPPPP
+# 00000000 00000000 00000000 00000000
+types = {
+    0b00: "COMPUTE",
+    0b01: "LOAD",
+    0b10: "STORE",
+    0b11: "JUMP"
+}
+
+PC = 0
+IN1 = 1
+IN2 = 2
+ACC = 3
+SP = 4
+BAF = 5
+CS = 6
+DS = 7
+I = 8
+
+# INSTRUCTION MODES
+LOAD = 0b00
+LOADIN = 0b01
+LOADI = 0b11
+
+STORE = 0b00
+STOREIN = 0b01
+MOVE = 0b11
+
+INT = 1
+RTI = 2
+
+ADD = 0
+SUB = 1
+MUL = 2
+DIV = 3
+MOD = 4
+OPLUS = 5
+OR_ = 6
+AND_ = 7
