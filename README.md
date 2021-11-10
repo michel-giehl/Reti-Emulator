@@ -2,13 +2,13 @@
 
 Executes ReTi code and displays it.
 
-## [Live Demo](https://reti.gim.one/)
+## [Live version](https://reti.gim.one/)
 
 ## Built with
 
 * [Python 3](https://python.org/) (ReTi logic & emulator)
 * [Flask](https://flask.palletsprojects.com/en/2.0.x/) (Server backend)
-* [CodeMirror] (https://codemirror.net/) (Code Editor)
+* [CodeMirror](https://codemirror.net/) (Code Editor)
 * [ReTi Simulator](http://reti.agrafix.net) (ReTi Code highlighting)
 
 ## Instruction set
