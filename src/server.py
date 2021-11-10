@@ -22,7 +22,15 @@ def send(path = 'index.html'):
     """
     Route static files
     """
-    return send_from_directory('web', path)
+    return send_from_directory('web/', path)
+
+@app.route('/legacy/<path:path>')
+@app.route('/legacy/')
+def send_legacy(path = 'index.html'):
+    """
+    Route static files
+    """
+    return send_from_directory('web-legacy/', path)
 
 @app.errorhandler(429)
 def ratelimit_handler(e):
@@ -67,10 +75,11 @@ def run():
         reti_states[i] = {
             "instruction": c.decompile(reti._register[I]),
             "registers": dict(zip(("PC", "IN1", "IN2", "ACC", "SP", "BAF", "CS", "DS", "I"), reti._register)),
-            "sram": reti.sram.copy()
+            "sram": reti.sram.copy(),
+            "uart": reti.uart.copy()
         }
         if i % 50 == 0:
-            if util.get_size(reti_states) > 1000000:
+            if util.get_size(reti_states) > 3000000:
                 break
         r.simulate_uart(reti, uart_data, mode="READ")
     return jsonify(reti_states)

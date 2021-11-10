@@ -1,14 +1,12 @@
 import utility as u
-from constants import types
+from constants import *
 
 class CompilationError(RuntimeError):
     def __init__(self, message):
         self.message = message
-        pass
-    pass
 
 
-register_encode = {
+encode_register = {
     0: "PC",
     1: "IN1",
     2: "IN2",
@@ -19,96 +17,16 @@ register_encode = {
     7: "DS"
 }
 
-register_decode = u.inverse(register_encode)
-
-# LOAD
-# T = Typ (LOAD)
-# M = Modus
-# S = Addressregister
-# D = Destination
-# TTMMSSSD DDPPPPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
-load_type = 0b01 << 30
-load_instructions = {
-    "LOAD": load_type | 0b0 << 28,
-    "LOADIN": load_type | 0b01 << 28,
-    "LOADI": load_type | 0b11 << 28
-}
-
-# STORE
-# T = Typ (LOAD)
-# M = Modus
-# S = Quellregister
-# D = Destination
-# TTMMSSSD DDPPPPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
-store_type = 0b10 << 30
-store_instructions = {
-    "STORE": store_type | 0b0 << 28,
-    "STOREIN": store_type | 0b01 << 28,
-    "MOVE": store_type | 0b11 << 28
-}
-
-# JUMP
-# T = Typ (LOAD)
-# C = Condition
-# J = Jump, Syscall, RTI
-# * = not used
-# TTCCCJJ* **PPPPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
-jump_type = 0b11 << 30
-jump_instructions = {
-    "NOP": jump_type | 0b000 << 27,
-    "JG": jump_type | 0b001 << 27,
-    "JE": jump_type | 0b010 << 27,
-    "JGE": jump_type | 0b011 << 27,
-    "JL": jump_type | 0b100 << 27,
-    "JNE": jump_type | 0b101 << 27,
-    "JLE": jump_type | 0b110 << 27,
-    "JMP": jump_type | 0b111 << 27,
-}
-
-# COMPUTE
-# T = Typ (LOAD)
-# M = Compute Immidiate
-# R = Register Only
-# F = Function
-# D = Destination
-# S*= Source (if its register only)
-# TTMRFFFD DDSSSPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
-compute_function_dist = 25
-compute_ro_dist = 28
-compute_ci_dist = 29
-compute_source_dist = 19
-compute_dest_dist = 22
-compute_instructions = {
-    "ADDI": 0 | 1 << compute_ci_dist,
-    "SUBI": 0b001 << compute_function_dist | 1 << compute_ci_dist,
-    "MULI": 0b010 << compute_function_dist | 1 << compute_ci_dist,
-    "DIVI": 0b011 << compute_function_dist | 1 << compute_ci_dist,
-    "MODI": 0b100 << compute_function_dist | 1 << compute_ci_dist,
-    "OPLUSI": 0b101 << compute_function_dist | 1 << compute_ci_dist,
-    "ORI": 0b110 << compute_function_dist | 1 << compute_ci_dist,
-    "ANDI": 0b111 << compute_function_dist | 1 << compute_ci_dist,
-    # Not register only
-    "ADD": 0,
-    "SUB": 0b001 << compute_function_dist,
-    "MUL": 0b010 << compute_function_dist,
-    "DIV": 0b011 << compute_function_dist,
-    "MOD": 0b100 << compute_function_dist,
-    "OPLUS": 0b101 << compute_function_dist,
-    "OR": 0b110 << compute_function_dist,
-    "AND": 0b111 << compute_function_dist,
-}
-
+decode_register = u.inverse(encode_register)
 
 def register(s):
-    if s not in register_decode:
+    if s not in decode_register:
         raise CompilationError(f'Invalid Register "{s}"')
-    return register_decode[s]
+    return decode_register[s]
 
 def compile_load(args):
+    if args[0] not in load_instructions:
+        raise CompilationError(f'Invalid Instruction "{args[0]}"')
     instr = load_instructions[args[0]]
     if args[0] == "LOAD":
         instr |= register(args[1]) << 22 # destination
@@ -123,6 +41,8 @@ def compile_load(args):
     return instr
 
 def compile_store(args) -> int:
+    if args[0] not in store_instructions:
+        raise CompilationError(f'Invalid Instruction "{args[0]}"')
     instr = store_instructions[args[0]]
     if args[0] == "STORE":
         instr |= register(args[1]) << 25 # source
@@ -144,8 +64,10 @@ def compile_jump(args) -> int:
             instr |= 1 << 25
         else:
             instr |= 2 << 25
-    else:
+    elif args[0] in jump_instructions:
         instr |= jump_instructions[args[0]]
+    else:
+        raise CompilationError(f'Invalid Instruction "{args[0]}"')
     if len(args) > 1:
         instr |= u.to_unsigned(int(args[1]))
     return instr
@@ -153,8 +75,10 @@ def compile_jump(args) -> int:
 def compile_arithmetic(args):
     if len(args) != 3:
         raise CompilationError(f"Expected 3 arguments, {len(args)} provided")
+    if args[0] not in compute_instructions:
+        raise CompilationError(f'Invalid Instruction "{args[0]}"')
     instr = compute_instructions[args[0]]
-    register_only = args[2] in register_encode.values()
+    register_only = args[2] in encode_register.values()
     instr |= register(args[1]) << compute_dest_dist # destination
     if register_only:
         instr |= 1 << compute_ro_dist
@@ -219,13 +143,13 @@ def decompile_load(instruction):
     param = instruction & 0x3fffff
     # LOAD
     if mode == 0b00:
-        return f"LOAD {register_encode[dest]} {param}"
+        return f"LOAD {encode_register[dest]} {param}"
     # LOADIN
     elif mode == 0b01:
-        return f"LOADIN {register_encode[addr]} {register_encode[dest]} {u.to_signed(param)}"
+        return f"LOADIN {encode_register[addr]} {encode_register[dest]} {u.to_signed(param)}"
     # LOADI
     elif mode == 0b11:
-        return f"LOADI {register_encode[dest]} {param}"
+        return f"LOADI {encode_register[dest]} {param}"
 
 def decompile_store(instruction):
     mode = (instruction >> 28) & 0x3
@@ -234,13 +158,13 @@ def decompile_store(instruction):
     param = instruction & 0x3fffff
     # STORE
     if mode == 0b00:
-        return f"STORE {register_encode[source]} {param}"
+        return f"STORE {encode_register[source]} {param}"
     # STOREIN
     elif mode == 0b01:
-        return f"STOREIN {register_encode[dest]} {register_encode[source]} {u.to_signed(param)}"
+        return f"STOREIN {encode_register[dest]} {encode_register[source]} {u.to_signed(param)}"
     # MOVE
     elif mode == 0b11:
-        return f"MOVE {register_encode[source]} {register_encode[dest]}"
+        return f"MOVE {encode_register[source]} {encode_register[dest]}"
 
 def decompile_jump(instruction):
     condition = (instruction >> 27) & 0x7
@@ -287,8 +211,8 @@ def decompile_compute(instruction):
     param = instruction & 0x3fffff
     if register_only:
         param = instruction & 0x7ffff
-    d = register_encode[dest]
-    s = register_encode[source] if register_only else param
+    d = encode_register[dest]
+    s = encode_register[source] if register_only else param
     i = "I" if compute_immidiate else ""
     if func == 0b000:
         return f"ADD{i} {d} {s}"

@@ -1,111 +1,125 @@
 <!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Online IDE &amp; Emulator for the advanced ReTi</title>
+        <!-- EXTERNAL -->
+        <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="codemirror/theme/monokai.css">
+        <link rel="stylesheet" href="codemirror/theme/solarized.css">
+        <link rel="stylesheet" href="codemirror/theme/neat.css">
+        <link rel="stylesheet" href="codemirror/theme/material-darker.css">
+        <script src="codemirror/lib/codemirror.js"></script>
+        <script src="codemirror/mode/reti.js"></script>
+        <script src="jquery.min.js"></script>
+        <!-- MY STUFF -->
+        <link type="text/css" rel="stylesheet" href="style.css"/>
+        <script src="run_code.js"></script>
+        <script src="index.js"></script>
+    </head>
 
-<head>
-    <link rel="stylesheet" href="style.css"/>
-    <script src="index.js"></script>
-</head>
-
-<body>
-    <div class="idk">
-        <span>Clock speeed</span>
-        <input type="number" id="clockspeed" value="5" min="1" max="20"/>
-        <input type="button" id="run" value="Run"/>
-        <input type="button" id="stop" value="Pause"/>
-        <input type="button" name="step" id="backward" value="< Step" hidden/>
-        <input type="button" name="step" id="forward" value="Step >" hidden/>
-        <br/>
-        <span>Decimal numbers?</span>
-        <input type="checkbox" id="decimal-selector" name="checkbox" value="false"/>
-        <br/>
-        <span>UART Data (that the UART sends to ReTi)</span>
-        <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/>
-        <br/>
-        <br/>
-        <br/>
-        <span id="status-message"></span>
-    </div>
-    <div id="left">
-        <textarea id="source-code">; +------------------------------------------+
-;            Online ReTi Emulator           
-; +------------------------------------------+
-;
-; UART-Data field:
-; comma-seperated 8 bit numbers that the UART stores in R1 and the CPU
-; can then retrieve. The default values "112,192,0,42,112,0,0,0" are the 2 instructions:
-; LOADI ACC 42
-; LOADI PC 0
-; encoded as 8 bit comma-seperated numbers
-;
-; Constants in EPROM:
-; +-------+-----------------------------------+
-; | ADDR  |               DATA                |
-; +-------+-----------------------------------+
-; | 65535 | 01000000000000000000000000000000  |
-; | 65534 | 10000000000000000000000000000000  |
-; | 65533 |            LOADI PC 0             |
-; +-------+-----------------------------------+
-; JUMP Instructions:
-; +--------+----------------------------------+
-; | JUMP   |                JMP               |
-; | JUMP>  |                JG                |
-; | JUMP>= |                JGE               |
-; | JUMP<  |                JL                |
-; | JUMP<= |                JLE               |
-; | JUMP=  |                JE                |
-; | JUMP!= |                JNE               |
-; +--------+----------------------------------+
-; Comments start with ";" or "//"
-; Example program: fib.reti
-;
-LOAD DS 65534     ; access SRAM
-LOAD SP 0         ; use SP as a counter (evil)
-LOADI IN1 0       ; IN1 = 0
-LOADI IN2 1       ; IN2 = 1
-LOADI ACC 0       ; ACC = 0
-MOVE IN1 ACC      ; ACC = IN1 + IN2
-ADD ACC IN2       ; ACC = IN1 + IN2
-MOVE IN2 IN1      ; IN1 = IN2
-MOVE ACC IN2      ; IN2 = ACC
-STOREIN SP IN1 0  ; store in SRAM
-ADDI SP 1         ; increment counter
-JMP -6            ; loop forever
-
-</textarea>
-    </div>
-    <div id="right" autofocus>
-        <div class="grid-container">
-            <div class="grid-item row-one column-one" id ="field-instruction-header">Instruction</div>
-            <div class="grid-item row-one column-two" id="field-instruction">LOADI PC 0</div>
-            <div class="grid-item row-two column-one">PC</div>
-            <div class="grid-item row-two column-two" id="field-pc">0</div>
-            <div class="grid-item row-three column-one">IN1</div>
-            <div class="grid-item row-three column-two" id="field-in1">0</div>
-            <div class="grid-item row-four column-one">IN2</div>
-            <div class="grid-item row-four column-two" id="field-in2">0</div>
-            <div class="grid-item row-five column-one">ACC</div>
-            <div class="grid-item row-five column-two" id="field-acc">0</div>
-            <div class="grid-item row-six column-one">SP</div>
-            <div class="grid-item row-six column-two" id="field-sp">0</div>
-            <div class="grid-item row-seven column-one">BAF</div>
-            <div class="grid-item row-seven column-two" id="field-baf">0</div>
-            <div class="grid-item row-eight column-one">CS</div>
-            <div class="grid-item row-eight column-two" id="field-cs">0</div>
-            <div class="grid-item row-nine column-one">DS</div>
-            <div class="grid-item row-nine column-two" id="field-ds">0</div>
-            <div class="grid-item row-all column-three" id="field-sram-container">
-                <div class="grid-item row-one column-three" style="border: solid black 2px;">SRAM</div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
-                <div class="grid-item row-one column-three" style="border: solid black 2px;"></div>
+    <body>
+        <div id="toolbar">
+            <div class="toolbar-item">
+                <span>Clock speed</span>
+                <input type="number" id="clockspeed" value="5" min="1" max="50"/>
+                <span>Start/Pause</span>
+                <input type="button" id="run" value="Run"/>
+                <input type="button" id="stop" value="Pause"/>
+                <input type="button" name="step" id="backward" value="< Step" hidden/>
+                <input type="button" name="step" id="forward" value="Step >" hidden/>
+            </div>
+            <div class="toolbar-item">
+                <span>Decimal numbers</span>
+                <input type="checkbox" id="decimal-selector" name="checkbox" value="false"/>
+            </div>
+            <div class="toolbar-item">
+                <span>UART R1 Data</span>
+                <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/>
+            </div>
+            <div class="toolbar-item error">
+                <span>Theme</span>
+                <select id="theme-selector">
+                    <option selected>material-darker</option>
+                    <option>monokai</option>
+                    <option>solarized</option>
+                    <option>neat</option>
+                </select>
+            </div>
+            <div class="toolbar-item error">
+                <span id="status-message"></span>
             </div>
         </div>
-    </div>
-</body>
+        <textarea id="code-window"></textarea>
+
+        <div class="state-window">
+            <div class="register-container">
+                <p id="instruction-counter">Instruction </p>
+                <p id="instruction-decoded">None</p>
+            </div>
+            <div class="register-container">
+                <div class="register-item">
+                    <span>PC</span>
+                    <p id="register-value-pc">0</p>
+                </div>
+                <div class="register-item">
+                    <span>IN1</span>
+                    <p id="register-value-in1">0</p>
+                </div>
+                <div class="register-item">
+                    <span>IN2</span>
+                    <p id="register-value-in2">0</p>
+                </div>
+                <div class="register-item">
+                    <span>ACC</span>
+                    <p id="register-value-acc">0</p>
+                </div>
+                <div class="register-item">
+                    <span>SP</span>
+                    <p id="register-value-sp">0</p>
+                </div>
+                <div class="register-item">
+                    <span>BAF</span>
+                    <p id="register-value-baf">0</p>
+                </div>
+                <div class="register-item">
+                    <span>CS</span>
+                    <p id="register-value-cs">0</p>
+                </div>
+                <div class="register-item">
+                    <span>DS</span>
+                    <p id="register-value-ds">0</p>
+                </div>
+                <div class="register-item">
+                    <span>I</span>
+                    <p id="register-value-i">0</p>
+                </div>
+            </div>
+            <div class="memory-container">
+                <div class="memory-item-1">
+                    <span>SRAM</span>
+                    <table>
+                        <tr id="sram-table">
+                            <th>ADDR</th>
+                            <th>DATA</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="memory-item-2">
+                    <span>UART</span>
+                    <table>
+                        <tr id="uart-table">
+                            <th>ADDR</th>
+                            <th>DATA</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="sources">
+            <b>Advanced ReTi IDE &amp; Emulator</b>
+            | <a href="https://git.gim.one/GiM/ReTi-Emulator">Source code</a>
+        </div>
+    </body> 
+</html>

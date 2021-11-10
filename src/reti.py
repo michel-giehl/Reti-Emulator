@@ -1,6 +1,4 @@
 import sys
-import time
-import random
 import compiler as c
 import utility as u
 from constants import *

@@ -1,24 +1,21 @@
-document.addEventListener("DOMContentLoaded", function() {
+$(() => {
 
-    var animationState = {
-        paused: false,
-        running: false,
-        code: null,
-        instructionNum: 0,
-        timer: null
-    }
-    var useDecimalNumbers = false
-
-    document.querySelector("input[id=decimal-selector]").addEventListener('change', function() {
-        if (this.checked) {
+    $('#decimal-selector').change(() => {
+        if ($('#decimal-selector').prop("checked")) {
             useDecimalNumbers = true
         } else {
-            useDecimalNumbers = false
+            useDecimalNumbers = false   
         }
         display_state(0)
     })
 
-    document.querySelector("input[id=stop]").addEventListener('click', function() {
+    // Change Theme
+    $('#theme-selector').change(() => {
+        
+        myCodeMirror.setOption("theme", $('#theme-selector').val().toLowerCase())
+    })
+
+    $('#stop').click(() => {
         animationState.paused = !animationState.paused
         if (animationState.paused) {
             document.getElementById("stop").value = "Unpause"
@@ -31,113 +28,87 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     })
 
-    
-    document.querySelector("input[id=forward]").addEventListener('click', function() {
+    $('#forward').click(() => {
         if(animationState.running) {
             display_state(1)
         }
     })
 
-    document.querySelector("input[id=backward]").addEventListener('click', function() {
+    $('#backward').click(() => {
         if(animationState.running) {
             display_state(-1)
         }
     })
 
-    document.querySelector("input[id=clockspeed]").addEventListener('change', function() {
+    $('#clockspeed').change(() => {
         run_code()
     })
 
-    document.querySelector("input[id=run]").addEventListener('click', async function() {
+    $('#run').click(async () => {
         let start_time = Date.now()
-        let status_element = document.getElementById("status-message")
-        status_element.innerHTML = "Compiling..."
-        let response = await fetch_code()
+        let status_element = $('#status-message')
+        status_element.text("Compiling...")
+        let response = await fetch_code(myCodeMirror.getValue())
         let took = Date.now() - start_time
         if (response.error) {
-            status_element.innerText = response.text
+            status_element.text(response.text.substring(0, 100))
+            let line_number = Number.parseInt(response.text.split("in line ")[1].split(' "')[0])
+            console.log("Error in line: " + line_number)
             return
         }
-        status_element.innerText = `Execution successful (took ${took}ms).`
+        status_element.text(`Execution successful (took ${took}ms).`)
     })
 
-    /**
-     * Run code on server
-     */
-    fetch_code = async () => {
-        let code = document.getElementById("source-code").value
-        let uartData = document.getElementById("uart-data").value
-        let response = await fetch("/run", {method: "POST", body: code, headers: {"UART-Data": uartData}})
-        const text = await response.text()
-        if (response.ok) {
-            animationState.code = JSON.parse(text)
-            animationState.instructionNum = 0
-            run_code(text)
-        }
-        return {error: !response.ok, text: text}
-    }
-    
-    run_code = () => {
-        let animation_speed = 1000 / document.getElementById("clockspeed").value
-        if (animationState.running) {
-            clearInterval(animationState.timer)
-        }
-        animationState.running = true
-        reset_sram_display()
-        let json = animationState.code
-        let keys = Object.keys(json)
-        let len = keys.length
-        animationState.timer = setInterval(() => {
-            if (animationState.paused) return
-            let i = animationState.instructionNum
-            if (i >= len) {
-                animationState.running = false
-                animationState.code = null
-                clearInterval(animationState.timer)
-                return
-            }
-            display_state(1)
-        }, animation_speed)
-    }
-    
-    display_state = (num) => {
-        num += animationState.instructionNum
-        if (num < 0 || num > Object.keys(animationState.code)) {
-            return
-        }
-        animationState.instructionNum = num
-        let state = Object.values(animationState.code)[num]
-        let registerKeys = Object.keys(state.registers)
-        let sram = state.sram
-        document.getElementById(`field-instruction-header`).innerText = `Instruction ${num + 1}/${Object.keys(animationState.code).length}`
-        document.getElementById(`field-instruction`).innerText = state.instruction
-        // Display registers
-        for (let i = 0; i < 7; i++) {
-            registerName = registerKeys[i];
-            let element = document.getElementById(`field-${registerName.toLowerCase()}`)
-            if (element) {
-                element.innerText = stringifyNumber(state.registers[registerName])
-            }
-        }
-        // Display sram
-        let sramElements = document.getElementById("field-sram-container").children
-        let sramKeys = Object.keys(sram)
-        for (let i = 0; i < Math.min(11, sramKeys.length); i++) {
-            let addr = sramKeys[i]
-            let data = sram[addr]
-            sramElements[i + 1].innerText = `${addr}    ${stringifyNumber(data)}`
-        }
-    }
+    myCodeMirror = CodeMirror.fromTextArea(document.getElementById("code-window"),
+    {
+        mode: "reti",
+        lineNumbers: true,
+        enterMode: "keep",
+        theme: "monokai"
+    })
 
-    reset_sram_display = () => {
-        let sram_elements = document.getElementById("field-sram-container").children
-        for (let i = 1; i < 12; i++) {
-            sram_elements[i].innerText = ""
-        }
-    }
-
-    stringifyNumber = (num) => {
-        num = Number.parseInt(num)
-        return num === NaN ? 0 : num.toString(useDecimalNumbers ? 10 : 16)
-    }
+    myCodeMirror.setValue('; +------------------------------------------+' +
+    '\n;            Online ReTi Emulator           ' +
+    '\n; +------------------------------------------+' +
+    '\n;' +
+    '\n; UART-Data field:' +
+    '\n; comma-seperated 8 bit numbers that the UART stores in R1 and the CPU' +
+    '\n; can then retrieve. The default values "112,192,0,42,112,0,0,0" are the 2 instructions:' +
+    '\n; LOADI ACC 42' +
+    '\n; LOADI PC 0' +
+    '\n; encoded as 8 bit comma-seperated numbers' +
+    '\n;' +
+    '\n; Constants in EPROM:' +
+    '\n; +-------+-----------------------------------+' +
+    '\n; | ADDR  |               DATA                |' +
+    '\n; +-------+-----------------------------------+' +
+    '\n; | 65535 | 01000000000000000000000000000000  |' +
+    '\n; | 65534 | 10000000000000000000000000000000  |' +
+    '\n; | 65533 |            LOADI PC 0             |' +
+    '\n; +-------+-----------------------------------+' +
+    '\n; JUMP Instructions:' +
+    '\n; +--------+----------------------------------+' +
+    '\n; | JUMP   |                JMP               |' +
+    '\n; | JUMP>  |                JG                |' +
+    '\n; | JUMP>= |                JGE               |' +
+    '\n; | JUMP<  |                JL                |' +
+    '\n; | JUMP<= |                JLE               |' +
+    '\n; | JUMP=  |                JE                |' +
+    '\n; | JUMP!= |                JNE               |' +
+    '\n; +--------+----------------------------------+' +
+    '\n; Comments start with ";" or "//"' +
+    '\n; Example program: fib.reti' +
+    '\n;' +
+    '\nLOAD DS 65534     ; access SRAM' +
+    '\nLOAD SP 0         ; use SP as a counter (evil)' +
+    '\nLOADI IN1 0       ; IN1 = 0' +
+    '\nLOADI IN2 1       ; IN2 = 1' +
+    '\nLOADI ACC 0       ; ACC = 0' +
+    '\nMOVE IN1 ACC      ; ACC = IN1 + IN2' +
+    '\nADD ACC IN2       ; ACC = IN1 + IN2' +
+    '\nMOVE IN2 IN1      ; IN1 = IN2' +
+    '\nMOVE ACC IN2      ; IN2 = ACC' +
+    '\nSTOREIN SP IN1 0  ; store in SRAM' +
+    '\nADDI SP 1         ; increment counter' +
+    '\nJMP -6            ; loop forever')
 })
