@@ -6,8 +6,10 @@ Executes ReTi code and displays it.
 
 ## Built with
 
-* [Python 3](https://python.org/)
-* [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+* [Python 3](https://python.org/) (ReTi logic & emulator)
+* [Flask](https://flask.palletsprojects.com/en/2.0.x/) (Server backend)
+* [CodeMirror] (https://codemirror.net/) (Code Editor)
+* [ReTi Simulator](http://reti.agrafix.net) (ReTi Code highlighting)
 
 ## Instruction set
 - [x] `LOAD D i`
