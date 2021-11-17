@@ -56,7 +56,8 @@ $(() => {
             console.log("Error in line: " + line_number)
             return
         }
-        status_element.text(`Execution successful (took ${took}ms).`)
+        let json = JSON.parse(response.text)
+        status_element.text(`Execution successful (request took ${took}ms, execution finished: ${json.execution_finished}).`)
     })
 
     myCodeMirror = CodeMirror.fromTextArea(document.getElementById("code-window"),

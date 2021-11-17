@@ -15,7 +15,8 @@ fetch_code = async (code) => {
     let response = await fetch("/run", {method: "POST", body: code, headers: {"UART-Data": uartData}})
     const text = await response.text()
     if (response.ok) {
-        animationState.code = JSON.parse(text)
+        json = JSON.parse(text)
+        animationState.code = json.reti
         animationState.instructionNum = 0
         run_code(text)
     }

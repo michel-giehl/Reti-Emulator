@@ -5,6 +5,7 @@ import utility as util
 from constants import *
 # system packages
 import re
+import time
 from os import getenv
 from string import ascii_letters
 # other packages
@@ -66,23 +67,37 @@ def run():
     r.load_constants(reti)
     reti.read_program(compiled_code)
     reti_states = dict()
+    size = 0
+    execution_time = 0.0
+    jsonify_time = 0.0
+    execution_finished = False
     # run up to 10,000 iterations
-    for i in range(10000):
+    for i in range(10_000):
+        start = time.monotonic()
         reti.fetch()
         if reti._register[I] == 0:
+            execution_finished = True
             break
         reti.execute()
+        execution_time += time.monotonic() - start
+        start = time.monotonic()
         reti_states[i] = {
             "instruction": c.decompile(reti._register[I]),
             "registers": dict(zip(("PC", "IN1", "IN2", "ACC", "SP", "BAF", "CS", "DS", "I"), reti._register)),
             "sram": reti.sram.copy(),
             "uart": reti.uart.copy()
         }
-        if i % 50 == 0:
-            if util.get_size(reti_states) > 3000000:
-                break
+        size += len(str(reti_states[i]))
+        jsonify_time += time.monotonic() - start
+        # limit to 1 MB of data
+        if size > 1_000_000:
+            break
         r.simulate_uart(reti, uart_data, mode="READ")
-    return jsonify(reti_states)
+    return_data = {
+        "execution_finished": execution_finished,
+        "reti": reti_states
+    }
+    return jsonify(return_data)
 
 
 if __name__ == '__main__':
