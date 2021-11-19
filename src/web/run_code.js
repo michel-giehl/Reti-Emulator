@@ -60,7 +60,7 @@ display_state = (num) => {
     $("#instruction-counter").text(`Instruction ${num + 1}/${Object.keys(animationState.code).length}`)
     $("#instruction-decoded").text(state.instruction)
     // Display registers
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
         registerName = registerKeys[i];
         let element = $(`#register-value-${registerName.toLowerCase()}`)
         if (element) {

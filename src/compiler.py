@@ -14,7 +14,7 @@ encode_register = {
     4: "SP",
     5: "BAF",
     6: "CS",
-    7: "DS"
+    7: "DS",
 }
 
 decode_register = u.inverse(encode_register)

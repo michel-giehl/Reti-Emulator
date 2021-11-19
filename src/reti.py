@@ -36,8 +36,10 @@ class ReTi:
         read from memory
         """
         segment = self._register[seg] >> 30
+        print(f"addr = {addr}")
         data = self.memory_map[segment].get(addr) or 0
         if dest:
+            print(f"register[{c.encode_register[dest]}] = {data}")
             self._register[dest] = data
         else:
             return data
@@ -74,7 +76,7 @@ class ReTi:
             self.mem_read(param, dest)
         # LOADIN
         elif mode == 0b01:
-            self.mem_read(u.to_unsigned(addr) + u.to_signed(param), dest)
+            self.mem_read(self._register[addr] + u.to_signed(param), dest)
         # LOADI
         elif mode == 0b11:
             self._register[dest] = param
