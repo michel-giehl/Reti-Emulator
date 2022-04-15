@@ -9,7 +9,7 @@ Executes ReTi code and displays it.
 * [Python 3](https://python.org/) (ReTi logic & emulator)
 * [Flask](https://flask.palletsprojects.com/en/2.0.x/) (Server backend)
 * [CodeMirror](https://codemirror.net/) (Code Editor)
-* [PicoC-Compiler] (https://github.com/matthejue/PicoC-Compiler)
+* [PicoC-Compiler](https://github.com/matthejue/PicoC-Compiler)
 * [ReTi Simulator](http://reti.agrafix.net) (ReTi Code highlighting)
 
 ## Instruction set
@@ -44,12 +44,12 @@ Executes ReTi code and displays it.
 - [x] `OR D S`
 - [x] `AND D S`
 - [x] `NOP`
-- [x] `JMP i` JUMP
-- [x] `JE i` JUMP=
-- [x] `JNE i` JUMP!=
-- [x] `JG i` JUMP>
-- [x] `JGE i` JUMP>=
-- [x] `JL i` JUMP<
-- [x] `JLE i` JUMP<=
+- [x] `JUMP i`
+- [x] `JUMP== i`
+- [x] `JUMP!= i`
+- [x] `JUMP> i`
+- [x] `JUMP>= i`
+- [x] `JUMP< i`
+- [x] `JUMP<= i`
 - [ ] `INT i`
 - [ ] `RTI`
