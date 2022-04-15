@@ -1,7 +1,8 @@
+import { registerNames } from "../web/global_vars.js"
+
 const config = {
   triangleStretch: 0.8,
   marginSides: 0.04,
-  registerNames: ["PC", "IN1", "IN2", "ACC", "SP", "BAF", "CS", "DS", "I"],
   driverNames: ["0Ld", "PCLd", "IN1Ld", "IN2Ld", "ACCLd", "SPLd", "BAFLd", "CSLd", "DSLd", "0Rd", "IRd", "DRd"],
 }
 
@@ -216,9 +217,9 @@ document.addEventListener("DOMContentLoaded", function() {
   drawAddressPath(ctx, 0, 850)
   ctx.lineWidth = 2
   for (let i = 1; i <= 8; i++) {
-    drawRegister(ctx, new Point(100 + i * 0.07 * width, 50), config.registerNames[i - 1], config.driverNames[i])
+    drawRegister(ctx, new Point(100 + i * 0.07 * width, 50), registerNames[i - 1], config.driverNames[i])
   }
-  drawRegister(ctx, new Point(50 + 12 * 0.07 * width, 50), config.registerNames[8], config.driverNames[10])
+  drawRegister(ctx, new Point(50 + 12 * 0.07 * width, 50), registerNames[8], config.driverNames[10])
   let took = Date.now() - start
   console.log(`Finished drawing after ${took}ms!`)
 })

@@ -126,32 +126,12 @@ $(() => {
         mode: "reti",
         lineNumbers: true,
         enterMode: "keep",
-        theme: "monokai"
+        theme: "monokai",
+        gutters: ["CodeMirror-line-numbers", "CodeMirror-lint-markers"],
     })
 
-    this.animationState.retiCode = '; +------------------------------------------+' +
-        '\n;            Online ReTi Emulator           ' +
-        '\n; +------------------------------------------+' +
-        '\n;' +
-        '\n; UART-Data field:' +
-        '\n; comma-seperated 8 bit numbers that the UART stores in R1 and the CPU' +
-        '\n; can then retrieve. The default values "112,192,0,42,112,0,0,0" are the 2 instructions:' +
-        '\n; LOADI ACC 42' +
-        '\n; LOADI PC 0' +
-        '\n; encoded as 8 bit comma-seperated numbers' +
-        '\n;' +
-        '\n; Constants in EPROM:' +
-        '\n; +-------+-----------------------------------+' +
-        '\n; | ADDR  |               DATA                |' +
-        '\n; +-------+-----------------------------------+' +
-        '\n; | 65535 | 01000000000000000000000000000000  |' +
-        '\n; | 65534 | 10000000000000000000000000000000  |' +
-        '\n; | 65533 |            LOADI PC 0             |' +
-        '\n; +-------+-----------------------------------+' +
-        '\n; Comments start with ";" or "#"' +
-        '\n; Example program: fib.reti' +
-        '\n;' +
-        '\nLOAD DS 65534     ; access SRAM' +
+    this.animationState.retiCode = 
+        'LOAD DS 65534     ; access SRAM' +
         '\nLOADI SP 100      ; use SP as a counter (evil)' +
         '\nLOADI IN1 0       ; IN1 = 0' +
         '\nLOADI IN2 1       ; IN2 = 1' +

@@ -1,22 +1,10 @@
-# T = Typ
-# S = Spezifikation
-# P = Parameter i
-# TTSSSSSS SSPPPPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
 types = {
-    0b00: "COMPUTE",
-    0b01: "LOAD",
-    0b10: "STORE",
-    0b11: "JUMP"
+    0: "COMPUTE",
+    1: "LOAD",
+    2: "STORE",
+    3: "JUMP"
 }
 
-# LOAD
-# T = Typ (LOAD)
-# M = Modus
-# S = Addressregister
-# D = Destination
-# TTMMSSSD DDPPPPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
 load_type = 0b01 << 30
 load_instructions = {
     "LOAD": load_type | 0b0 << 28,
@@ -24,13 +12,6 @@ load_instructions = {
     "LOADI": load_type | 0b11 << 28
 }
 
-# STORE
-# T = Typ (LOAD)
-# M = Modus
-# S = Quellregister
-# D = Destination
-# TTMMSSSD DDPPPPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
 store_type = 0b10 << 30
 store_instructions = {
     "STORE": store_type | 0b0 << 28,
@@ -38,13 +19,6 @@ store_instructions = {
     "MOVE": store_type | 0b11 << 28
 }
 
-# JUMP
-# T = Typ (LOAD)
-# C = Condition
-# J = Jump, Syscall, RTI
-# * = not used
-# TTCCCJJ* **PPPPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
 jump_type = 0b11 << 30
 jump_instructions = {
     "NOP": jump_type | 0b000 << 27,
@@ -57,15 +31,6 @@ jump_instructions = {
     "JUMP": jump_type | 0b111 << 27,
 }
 
-# COMPUTE
-# T = Typ (LOAD)
-# M = Compute Immidiate
-# R = Register Only
-# F = Function
-# D = Destination
-# S*= Source (if its register only)
-# TTMRFFFD DDSSSPPP PPPPPPPP PPPPPPPP
-# 00000000 00000000 00000000 00000000
 compute_function_dist = 25
 compute_ro_dist = 28
 compute_ci_dist = 29

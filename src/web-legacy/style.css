@@ -1,0 +1,141 @@
+
+.source-code-link {
+    color:blue;
+}
+
+body {
+    font-family: Consolas, 'Courier New', monospace;
+    background-color: rgb(30, 33, 34);
+    color: white;
+}
+
+table {
+    width: 100%;
+}
+
+.navbar-item {
+    height: 100%;
+    width: 49%;
+    background-color: inherit;
+    display: inline-block;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    color: white;
+}
+
+.navbar-item:disabled {
+    background-color: rgb(61, 61, 61);
+}
+
+.navbar-item:hover {
+    background-color: rgb(61,61,61);
+}
+
+#code-window-selector {
+    position: relative;
+    padding: 5px;
+    text-align: center;
+    height: 30px;
+    display: inline-block;
+    width: 49%;
+    left: 1;
+    background: rgb(35, 35, 35);
+}
+
+.register-container {
+    position: relative;
+}
+
+.register-item {
+    font-size: 10pt;
+    position: relative;
+    padding: 5px;
+    margin-top: 10px;
+    text-align: center;
+    width: 8%;
+    height: 60px;
+    display: inline-block;
+    background-color: #333;
+}
+
+.memory-container {
+    width: 100%;
+    position: relative;
+    display: grid;
+}
+
+.memory-item-1 {
+    text-align: center;
+    position: absolute;
+    width: 45%;
+    left: 0;
+    margin-top: 10px;
+}
+
+.memory-item-2 {
+    text-align: center;
+    position: absolute;
+    width: 45%;
+    right: 0;
+    margin-top: 10px;
+}
+
+#status-message {
+    margin-top: 15px;
+    font-size: 15pt;
+}
+
+#clockspeed {
+    width: 50px;
+}
+
+#sources {
+    font-family: "Verdana" !important;
+    position: fixed;
+    top: 5px;
+    right: 10px;
+    height: 15%;
+    padding: 5px;
+    font-size: x-small;
+}
+
+#toolbar {
+    position: relative;
+    padding: 10px;
+}
+
+.toolbar-item {
+    position: relative;
+    padding: 5px;
+    height: 20px;
+    display: block;
+}
+
+.toolbar-item-inline-right {
+    position: relative;
+    padding: 5px;
+    height: 20px;
+    display: inline-block;
+}
+
+.CodeMirror {
+    border: 1px solid rgb(50, 50, 50);
+    width: 48%;
+    height: 78%;
+    position: absolute;
+    padding: 10px;
+    left: 1;
+    top: 2;
+}
+
+.state-window {
+    overflow-y: auto;
+    border: 1px solid rgb(50, 50, 50);
+    width: 48%;
+    height: 78%;
+    position: absolute;
+    padding: 10px;
+    right: 10px;
+}
