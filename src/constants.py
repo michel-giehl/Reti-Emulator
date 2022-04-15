@@ -48,13 +48,13 @@ store_instructions = {
 jump_type = 0b11 << 30
 jump_instructions = {
     "NOP": jump_type | 0b000 << 27,
-    "JG": jump_type | 0b001 << 27,
-    "JE": jump_type | 0b010 << 27,
-    "JGE": jump_type | 0b011 << 27,
-    "JL": jump_type | 0b100 << 27,
-    "JNE": jump_type | 0b101 << 27,
-    "JLE": jump_type | 0b110 << 27,
-    "JMP": jump_type | 0b111 << 27,
+    "JUMP>": jump_type | 0b001 << 27,
+    "JUMP==": jump_type | 0b010 << 27,
+    "JUMP>=": jump_type | 0b011 << 27,
+    "JUMP<": jump_type | 0b100 << 27,
+    "JUMP!=": jump_type | 0b101 << 27,
+    "JUMP<=": jump_type | 0b110 << 27,
+    "JUMP": jump_type | 0b111 << 27,
 }
 
 # COMPUTE

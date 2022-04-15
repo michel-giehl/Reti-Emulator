@@ -1,5 +1,5 @@
 
-a {
+.source-code-link {
     color:blue;
 }
 
@@ -8,8 +8,40 @@ body {
     background-color: rgb(30, 33, 34);
     color: white;
 }
+
 table {
     width: 100%;
+}
+
+.navbar-item {
+    height: 100%;
+    width: 49%;
+    background-color: inherit;
+    display: inline-block;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    color: white;
+}
+
+.navbar-item:disabled {
+    background-color: rgb(61, 61, 61);
+}
+
+.navbar-item:hover {
+    background-color: rgb(61,61,61);
+}
+
+#code-window-selector {
+    position: relative;
+    padding: 5px;
+    text-align: center;
+    height: 30px;
+    display: inline-block;
+    width: 49%;
+    left: 1;
+    background: rgb(35, 35, 35);
 }
 
 .register-container {
@@ -93,7 +125,6 @@ table {
     width: 48%;
     height: 78%;
     position: absolute;
-    margin-top: 10px;
     padding: 10px;
     left: 1;
     top: 2;
@@ -105,7 +136,6 @@ table {
     width: 48%;
     height: 78%;
     position: absolute;
-    margin-top: 10px;
     padding: 10px;
     right: 10px;
 }

@@ -17,13 +17,13 @@ CodeMirror.defineMode("reti", function(config, parserConfig) {
       'LOAD', 'LOADI', 'LOADIN', 
       'STORE', 'STOREIN', 'MOVE',
       'SUBI', 'ADDI', 'OPLUSI', 'ORI', 'ANDI', 'SUB', 'ADD', 'OPLUS', 'OR', 'AND', 'MUL', 'MULI', 'DIV', 'DIVI',
-      'NOP', 'JMP', 'JL', 'JLE', 'JG', 'JGE', 'JE', 'JNE'
+      'NOP', 'JUMP', 'JUMP<', 'JUMP<=', 'JUMP>', 'JUMP>=', 'JUMP==', 'JUMP!='
     ]);
     var keywords = wordRE(['PC', 'IN1', 'IN2', 'ACC', 'SP', 'BAF', 'CS', 'DS']);
   
     function normal(stream, state) {
       var ch = stream.next();
-      if (ch == ";") {
+      if (ch == ";" || ch == "#") {
         stream.skipToEnd();
         return "comment";
       } 

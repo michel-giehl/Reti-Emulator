@@ -3,10 +3,21 @@ var animationState = {
     running: false,
     code: null,
     instructionNum: 0,
-    timer: null
+    timer: null,
+    retiCode: "",
+    picoCCode: "",
+    activeCodeWindow: 0,
+    numberBase: 16,
 }
-var useDecimalNumbers = false
+
+var compiledPicoC = {
+    retiCode: "",
+    warningsAndErrors: "",
+    symbolTable: ""
+}
+
 var myCodeMirror = false
+
 /**
  * Run code on server
  */
@@ -21,6 +32,18 @@ fetch_code = async (code) => {
         run_code(text)
     }
     return {error: !response.ok, text: text}
+}
+
+compile_picoc = async (code) => {
+    let response = await fetch("/compile", {method: "POST", body: code})
+    const text = await response.text()
+    if (response.ok) {
+        json = JSON.parse(text)
+        compiledPicoC.retiCode = json.reti_code
+        compiledPicoC.symbolTable = json.symbol_table_csv
+        compiledPicoC.warningsAndErrors = json.warnings_and_errors
+    }
+    return {error: !response.ok, compiledCode: compiledPicoC,text: text}
 }
 
 run_code = () => {
@@ -91,5 +114,5 @@ reset_sram_and_uart_display = () => {
 
 stringifyNumber = (num) => {
     num = Number.parseInt(num)
-    return num === NaN ? 0 : num.toString(useDecimalNumbers ? 10 : 16)
+    return num === NaN ? 0 : num.toString(animationState.numberBase)
 }

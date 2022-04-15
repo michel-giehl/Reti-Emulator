@@ -1,2 +1,5 @@
-flask
+Flask[async]
 flask-limiter
+tabulate
+cmd2
+staticx

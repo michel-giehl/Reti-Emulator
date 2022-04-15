@@ -11,4 +11,5 @@ services:
       - .:/code
     environment:
       - PORT=8000
+      - DEBUG=0
       - HOST=0.0.0.0

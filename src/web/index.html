@@ -9,8 +9,10 @@
         <link rel="stylesheet" href="codemirror/theme/solarized.css">
         <link rel="stylesheet" href="codemirror/theme/neat.css">
         <link rel="stylesheet" href="codemirror/theme/material-darker.css">
+        <link rel="stylesheet" href="codemirror/theme/vscode-dark.css">
         <script src="codemirror/lib/codemirror.js"></script>
         <script src="codemirror/mode/reti.js"></script>
+        <script src="codemirror/mode/clike.js"></script>
         <script src="jquery.min.js"></script>
         <!-- MY STUFF -->
         <link type="text/css" rel="stylesheet" href="style.css"/>
@@ -31,24 +33,34 @@
             </div>
             <div class="toolbar-item">
                 <span>Decimal numbers</span>
-                <input type="checkbox" id="decimal-selector" name="checkbox" value="false"/>
+                <select id="number-base-selector">
+                    <option>Binary</option>
+                    <option>Decimal</option>
+                    <option selected>Hexadecimal</option>
+                </select>
+                <!--<input type="checkbox" id="decimal-selector" name="checkbox" value="false"/> -->
             </div>
             <div class="toolbar-item">
                 <span>UART R1 Data</span>
                 <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/>
             </div>
-            <div class="toolbar-item error">
+            <div class="toolbar-item">
                 <span>Theme</span>
                 <select id="theme-selector">
                     <option selected>monokai</option>
                     <option>material-darker</option>
                     <option>solarized</option>
                     <option>neat</option>
+                    <option>vscode-dark</option>
                 </select>
             </div>
             <div class="toolbar-item error">
                 <span id="status-message"></span>
             </div>
+        </div>
+        <div id="code-window-selector">
+            <button class="navbar-item" id="navbar-select-reti" disabled>ReTi</button>
+            <button class="navbar-item" id="navbar-select-picoc">Pico C</button>
         </div>
         <textarea id="code-window"></textarea>
 
@@ -119,7 +131,7 @@
 
         <div id="sources">
             <b>Advanced ReTi IDE &amp; Emulator</b>
-            | <a href="https://git.gim.one/GiM/ReTi-Emulator">Source code</a>
+            | <a id="source-code-link" href="https://git.gim.one/GiM/ReTi-Emulator">Source code</a>
         </div>
     </body> 
 </html>

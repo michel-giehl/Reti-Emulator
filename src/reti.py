@@ -1,11 +1,13 @@
 import sys
-import compiler as c
+import reti_compiler as c
 import utility as u
 from constants import *
 
 class ReTi:
     def __init__(self):
         self._register = [0 for i in range(9)]
+        self._register[CS] = 1 << 31
+        self._register[SP] = 2**16 - 1
 
         self.sram = dict()
         self.uart = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
@@ -22,7 +24,7 @@ class ReTi:
         Loads a (compiled) program
         """
         for i in range(len(code)):
-            self.eprom[i] = code[i]
+            self.sram[i] = code[i]
 
     def mem_write(self, addr, data):
         """
@@ -36,10 +38,8 @@ class ReTi:
         read from memory
         """
         segment = self._register[seg] >> 30
-        print(f"addr = {addr}")
         data = self.memory_map[segment].get(addr) or 0
         if dest:
-            print(f"register[{c.encode_register[dest]}] = {data}")
             self._register[dest] = data
         else:
             return data
@@ -182,7 +182,7 @@ def init_program(reti, filename):
             lines.append(line)
     compiled_code = c.compile(lines)
     for i, instr in enumerate(compiled_code):
-        reti.eprom[i] = instr
+        reti.sram[i] = instr
     print(f"initialized program: {reti.eprom}")
 
 def run(filename):
