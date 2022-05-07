@@ -13,6 +13,46 @@ table {
     width: 100%;
 }
 
+#container {
+    background-color: aliceblue;
+}
+
+#code-window-selector {
+    position: relative;
+    padding: 5px;
+    text-align: center;
+    height: 30px;
+    display: inline-block;
+    width: 31%;
+    left: 1;
+    background: rgb(35, 35, 35);
+}
+
+#status-message {
+    margin-top: 15px;
+    font-size: 15pt;
+}
+
+#clockspeed {
+    width: 50px;
+}
+
+#sources {
+    font-family: "Verdana" !important;
+    position: fixed;
+    top: 5px;
+    right: 10px;
+    height: 15%;
+    padding: 5px;
+    font-size: x-small;
+}
+
+#toolbar {
+    position: relative;
+    padding: 10px;
+}
+
+/* NAVBAR */
 .navbar-item {
     height: 100%;
     width: 49%;
@@ -33,17 +73,8 @@ table {
     background-color: rgb(61,61,61);
 }
 
-#code-window-selector {
-    position: relative;
-    padding: 5px;
-    text-align: center;
-    height: 30px;
-    display: inline-block;
-    width: 49%;
-    left: 1;
-    background: rgb(35, 35, 35);
-}
 
+/* REGISTER */
 .register-container {
     position: relative;
 }
@@ -82,30 +113,8 @@ table {
     margin-top: 10px;
 }
 
-#status-message {
-    margin-top: 15px;
-    font-size: 15pt;
-}
 
-#clockspeed {
-    width: 50px;
-}
-
-#sources {
-    font-family: "Verdana" !important;
-    position: fixed;
-    top: 5px;
-    right: 10px;
-    height: 15%;
-    padding: 5px;
-    font-size: x-small;
-}
-
-#toolbar {
-    position: relative;
-    padding: 10px;
-}
-
+/* TOOLBR */
 .toolbar-item {
     position: relative;
     padding: 5px;
@@ -120,22 +129,23 @@ table {
     display: inline-block;
 }
 
+/* OTHER */
+.state-window {
+    overflow-y: auto;
+    border: 1px solid rgb(50, 50, 50);
+    width: 66%;
+    height: 78%;
+    position: absolute;
+    padding: 10px;
+    right: 10px;
+}
+
 .CodeMirror {
     border: 1px solid rgb(50, 50, 50);
-    width: 48%;
+    width: 30%;
     height: 78%;
     position: absolute;
     padding: 10px;
     left: 1;
     top: 2;
-}
-
-.state-window {
-    overflow-y: auto;
-    border: 1px solid rgb(50, 50, 50);
-    width: 48%;
-    height: 78%;
-    position: absolute;
-    padding: 10px;
-    right: 10px;
 }

@@ -1,18 +1,18 @@
 
 import { compile } from "./api.js"
-import { run_code } from "./run_code.js"
+import { nextReTiState, run_code } from "./run_code.js"
 import { config } from "./global_vars.js"
 
 function changeNumberStyle(base) {
-    if (isNaN(base)) {
-        baseMapping = {
-            "Binary": 2,
-            "Decimal": 10,
-            "Hexadecimal": 16
-        }
-        base = baseMapping[base]
-    }
-    config.numberStyle = base
+  if (isNaN(base)) {
+      let baseMapping = {
+          "Binary": 2,
+          "Decimal": 10,
+          "Hexadecimal": 16
+      }
+      base = baseMapping[base]
+  }
+  config.numberStyle = base
 }
 
 function changeTheme(theme) {
@@ -83,6 +83,16 @@ $(function() {
 
 
     $('#stop').click(function() {
+        config.paused = !config.paused
+        if (config.paused) {
+            document.getElementById("stop").value = "Unpause"
+            document.getElementById("forward").hidden = false
+            document.getElementById("backward").hidden = false
+        } else {
+            document.getElementById("stop").value = "Pause"
+            document.getElementById("forward").hidden = true
+            document.getElementById("backward").hidden = true
+        }
     })
 
 
@@ -99,6 +109,9 @@ $(function() {
 
 
     $('#forward').click(function() {
+        if (config.running) {
+            nextReTiState()
+        }
     })
 
 

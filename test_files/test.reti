@@ -1,12 +1,121 @@
-LOAD DS 65534     ; access SRAM
-LOADI SP 100      ; use SP as a counter (evil)
-LOADI IN1 0       ; IN1 = 0
-LOADI IN2 1       ; IN2 = 1
-LOADI ACC 0       ; ACC = 0
-MOVE IN1 ACC      ; ACC = IN1 + IN2
-ADD ACC IN2       ; ACC = IN1 + IN2
-MOVE IN2 IN1      ; IN1 = IN2
-MOVE ACC IN2      ; IN2 = ACC
-STOREIN SP IN1 0  ; store in SRAM
-ADDI SP 1         ; increment counter
-JUMP -6            ; loop forever
+# File 'test' Start
+# Main Funktion '(void main (int x) ... )' Start
+LOADI SP 200;
+# Allokation '(int x)' Start
+# Variable 'x' vom Typ 'int' mit Adresse '100' zur Symboltabelle hinzugefügt
+# Allokation '(int x)' Ende
+# Allokation '(int y)' Start
+# Variable 'y' vom Typ 'int' mit Adresse '101' zur Symboltabelle hinzugefügt
+# Allokation '(int y)' Ende
+# Allokation '(int z)' Start
+# Variable 'z' vom Typ 'int' mit Adresse '102' zur Symboltabelle hinzugefügt
+# Allokation '(int z)' Ende
+# While Statement 'While(ToBool(1) (x = 0) ... )' Start
+# Logischer Wahrheitswert aus arithmetischem Ausdruck 'ToBool(1)' Start
+# Arithmetischer Operand '1' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOADI ACC 1;       # Wert von '1' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand '1' Ende
+LOADIN SP ACC 1;   # Wert von '1' in ACC laden
+JUMP== 3;          # Überspringe 2 Befehle, wenn '1' den Wert '0' hat
+LOADI ACC 1;
+STOREIN SP ACC 1;  # Ergebnis in oberste Stack-Zelle
+# Logischer Wahrheitswert aus arithmetischem Ausdruck 'ToBool(1)' Ende
+LOADIN SP ACC 1;   # Wert von 'ToBool(1)' in ACC laden
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+JUMP== 59;         # Statements überspringen, wenn 'ToBool(1)' nicht erfüllt
+# Zuweisung '(x = 0)' Start
+# Arithmetischer Operand '0' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOADI ACC 0;       # Wert von '0' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand '0' Ende
+LOADIN SP ACC 1;   # Wert von '0' in ACC laden
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+STORE ACC 100;     # Wert '0' in Variable 'x' speichern
+# Zuweisung '(x = 0)' Ende
+# Zuweisung '(y = 1)' Start
+# Arithmetischer Operand '1' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOADI ACC 1;       # Wert von '1' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand '1' Ende
+LOADIN SP ACC 1;   # Wert von '1' in ACC laden
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+STORE ACC 101;     # Wert '1' in Variable 'y' speichern
+# Zuweisung '(y = 1)' Ende
+# While Statement 'While((x < 255) (z = (x + y)) ... )' Start
+# Logisches Atom '(x < 255)' Start
+# Arithmetischer Operand 'x' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOAD ACC 100;      # Wert von 'x' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand 'x' Ende
+# Arithmetischer Operand '255' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOADI ACC 255;     # Wert von '255' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand '255' Ende
+LOADIN SP ACC 2;   # Wert von 'x' in ACC laden
+LOADIN SP IN2 1;   # Wert von '255' in IN2 laden
+SUB ACC IN2;       # 'x - 255' in ACC laden
+JUMP< 3;           # Ergebnis '1', wenn '(x < 255)' erfüllt
+LOADI ACC 0;       # Ergebnis '0', wenn '(x < 255)' nicht erfüllt
+JUMP 2;
+LOADI ACC 1;       # Ergebnis '1', wenn '(x < 255)' wahr
+STOREIN SP ACC 2;  # Ergebnis in zweitoberste Stack-Zelle
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+# Logisches Atom '(x < 255)' Ende
+LOADIN SP ACC 1;   # Wert von '(x < 255)' in ACC laden
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+JUMP== 28;         # Statements überspringen, wenn '(x < 255)' nicht erfüllt
+# Zuweisung '(z = (x + y))' Start
+# Arithmetische binäre Operation '(x + y)' Start
+# Arithmetischer Operand 'x' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOAD ACC 100;      # Wert von 'x' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand 'x' Ende
+# Arithmetischer Operand 'y' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOAD ACC 101;      # Wert von 'y' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand 'y' Ende
+LOADIN SP ACC 2;   # Wert von 'x' in ACC laden
+LOADIN SP IN2 1;   # Wert von 'y' in IN2 laden
+ADD ACC IN2;       # Wert von '(x + y)' in ACC laden
+STOREIN SP ACC 2;  # Ergebnis in zweitoberste Stack-Zelle
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+# Arithmetische binäre Operation '(x + y)' Ende
+LOADIN SP ACC 1;   # Wert von '(x + y)' in ACC laden
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+STORE ACC 102;     # Wert '(x + y)' in Variable 'z' speichern
+# Zuweisung '(z = (x + y))' Ende
+# Zuweisung '(x = y)' Start
+# Arithmetischer Operand 'y' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOAD ACC 101;      # Wert von 'y' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand 'y' Ende
+LOADIN SP ACC 1;   # Wert von 'y' in ACC laden
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+STORE ACC 100;     # Wert 'y' in Variable 'x' speichern
+# Zuweisung '(x = y)' Ende
+# Zuweisung '(y = z)' Start
+# Arithmetischer Operand 'z' Start
+SUBI SP 1;         # Stack um eine Zelle erweitern
+LOAD ACC 102;      # Wert von 'z' in ACC laden
+STOREIN SP ACC 1;  # Wert in oberste Stack-Zelle
+# Arithmetischer Operand 'z' Ende
+LOADIN SP ACC 1;   # Wert von 'z' in ACC laden
+ADDI SP 1;         # Stack um eine Zelle verkürzen
+STORE ACC 101;     # Wert 'z' in Variable 'y' speichern
+# Zuweisung '(y = z)' Ende
+JUMP -44;          # Zurück zur Auswertung von '(x < 255)'
+# While Statement 'While((x < 255) (z = (x + y)) ... )' Ende
+JUMP -67;          # Zurück zur Auswertung von 'ToBool(1)'
+# While Statement 'While(ToBool(1) (x = 0) ... )' Ende
+JUMP 0;
+# Main Funktion '(void main (int x) ... )' Ende
+# File 'test' Ende

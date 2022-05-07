@@ -1,3 +1,16 @@
+import {
+    animateCOMPUTE,
+    animateCOMPUTERegisterOnly,
+    animateCOMPUTEI,
+    animateFetch,
+    animateLOAD,
+    animateLOADI,
+    animateLOADIN,
+    animateMOVE,
+    animateSTORE,
+    animateSTOREIN
+} from "./canvas_test/konva/index.js"
+
 const SRAM_SIZE = (1 << 16)
 const EPROM_SIZE = (1 << 16)
 const PC = 0
@@ -39,7 +52,7 @@ class ReTi {
     }
 
     #to32Bit(num) {
-        return num >>> 0
+        return num >> 0
     }
 
     memWrite(addr, data) {
@@ -49,7 +62,7 @@ class ReTi {
 
     memRead(addr, register = null, seg = DS) {
         let segment = this.registers[seg] >>> 30
-        let data = this.#to32Bit(this.memoryMap[segment][addr] | 0)
+        let data = this.memoryMap[segment][addr] | 0
         if (register != null) {
             this.registers[register] = data
             return
@@ -59,6 +72,7 @@ class ReTi {
 
     fetch() {
         this.memRead(this.registers[PC], I, CS)
+        animateFetch()
     }
 
     execute() {
@@ -88,12 +102,15 @@ class ReTi {
         switch (mode) {
             case 0b00: // LOAD
                 this.memRead(param, dest)
+                animateLOAD(dest)
                 break
             case 0b01: // LOADIN
                 this.memRead(this.registers[addr] + this.#toSigned(param), dest)
+                animateLOADIN(addr, dest)
                 break
             case 0b11: // LOADI
                 this.registers[dest] = param
+                animateLOADI(dest)
                 break
         }
         this.registers[PC]++
@@ -107,12 +124,15 @@ class ReTi {
         switch (mode) {
             case 0b00: // STORE
                 this.memWrite(param, this.registers[source])
+                animateSTORE(source)
                 break
             case 0b01: // STOREIN
                 this.memWrite(this.registers[dest] + this.#toSigned(param), this.registers[source])
+                animateSTOREIN(source, dest)
                 break
             case 0b11: // MOVE
                 this.registers[dest] = this.#to32Bit(this.registers[source])
+                animateMOVE(source, dest)
                 // don't increase PC if destination is PC
                 if (dest == PC) {
                     return
@@ -191,6 +211,14 @@ class ReTi {
         }
         this.registers[dest] = this.#to32Bit(r)
         this.registers[PC]++
+        // animation
+        if (computeImmidiate) {
+            animateCOMPUTEI(func, dest)
+        } else if(registerOnly) {
+            animateCOMPUTERegisterOnly(func, source, dest)
+        } else {
+            animateCOMPUTE(func, dest)
+        }
     }
 
     #loadConstants() {

@@ -3,6 +3,7 @@ import { retiValidator, picocCValidator } from "./linters.js"
 const config = {
   numberStyle: 16,
   reti: null,
+  fetch: null,
   paused: false,
   running: false,
   mode: "reti",
