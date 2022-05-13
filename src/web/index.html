@@ -41,17 +41,31 @@
                 <input type="button" name="step" id="forward" value="Step >" hidden/>
             </div>
             <div class="toolbar-item">
-                <span>Decimal numbers</span>
+                <span>Show Numbers as</span>
                 <select id="number-base-selector">
                     <option>Binary</option>
-                    <option>Decimal</option>
-                    <option selected>Hexadecimal</option>
+                    <option selected>Decimal</option>
+                    <option>Hexadecimal</option>
                 </select>
                 <!--<input type="checkbox" id="decimal-selector" name="checkbox" value="false"/> -->
             </div>
             <div class="toolbar-item">
-                <span>UART R1 Data</span>
-                <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/>
+                <!-- <span>UART Data</span>
+                <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/> -->
+                <span>Show animation (BETA):</span>
+                <input type="radio" id="yes" name="showAnimation" checked>
+                <label for="yes">Yes</label>
+                <input type="radio" id="no" name="showAnimation">
+                <label for="no">No</label>
+            </div>
+            <div class="toolbar-item">
+                <!-- <span>UART Data</span>
+                <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/> -->
+                <span>Mode:</span>
+                <input type="radio" id="simple" name="retiMode" disabled>
+                <label for="yes">Einfache ReTI (TI)</label>
+                <input type="radio" id="advanced" name="retiMode" checked>
+                <label for="no">Erweiterte ReTI (Betriebssysteme)</label>
             </div>
             <div class="toolbar-item">
                 <span>Theme</span>
@@ -77,7 +91,8 @@
                 <p id="instruction-counter">Instruction </p>
                 <p id="instruction-decoded">None</p>
             </div>
-            <div id="container"></div>
+            <!-- ReTI Animation -->
+            <div id="container" style="width: 80%; height: 80%;"></div>
             <div class="register-container">
                 <div class="register-item">
                     <span>PC</span>

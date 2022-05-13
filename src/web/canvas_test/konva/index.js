@@ -1,4 +1,4 @@
-import { registerNames } from "../../global_vars.js"
+import { config, registerNames } from "../../global_vars.js"
 
 let stage = null
 let layer = null
@@ -576,6 +576,9 @@ function setALUMode(num) {
 }
 
 function animateFetch() {
+    if (!config.showAnimation) {
+        return
+    }
     let color = "green"
     let active = [
         {
@@ -640,6 +643,9 @@ function animateFetch() {
 }
 
 function animateLOAD(register) {
+    if (!config.showAnimation) {
+        return
+    }
     register = registerNames[register].toLowerCase()
     let color = "green"
     let active = [
@@ -705,6 +711,9 @@ function animateLOAD(register) {
 }
 
 function animateLOADIN(source, dest) {
+    if (!config.showAnimation) {
+        return
+    }
     source = registerNames[source].toLowerCase()
     dest = registerNames[dest].toLowerCase()
     let color = "green"
@@ -775,6 +784,9 @@ function animateLOADIN(source, dest) {
 }
 
 function animateLOADI(registerName) {
+    if (!config.showAnimation) {
+        return
+    }
     registerName = registerNames[registerName].toLowerCase()
     let color = "green"
     setALUMode(0)
@@ -829,6 +841,9 @@ function animateLOADI(registerName) {
 }
 
 function animateSTORE(registerName) {
+    if (!config.showAnimation) {
+        return
+    }
     registerName = registerNames[registerName].toLowerCase()
     let color = "green"
     let active = [
@@ -889,6 +904,9 @@ function animateSTORE(registerName) {
 }
 
 function animateSTOREIN(source, dest) {
+    if (!config.showAnimation) {
+        return
+    }
     source = registerNames[source].toLowerCase()
     dest = registerNames[dest].toLowerCase()
     let color = "green"
@@ -954,6 +972,9 @@ function animateSTOREIN(source, dest) {
 }
 
 function animateMOVE(source, dest) {
+    if (!config.showAnimation) {
+        return
+    }
     source = registerNames[source].toLowerCase()
     dest = registerNames[dest].toLowerCase()
     let color = "green"
@@ -1000,6 +1021,9 @@ function animateMOVE(source, dest) {
 }
 
 function animateCOMPUTEI(mode, registerName) {
+    if (!config.showAnimation) {
+        return
+    }
     registerName = registerNames[registerName].toLowerCase()
     let color = "green"
     setALUMode(mode)
@@ -1058,6 +1082,9 @@ function animateCOMPUTEI(mode, registerName) {
 }
 
 function animateCOMPUTE(mode, registerName) {
+    if (!config.showAnimation) {
+        return
+    }
     registerName = registerNames[registerName].toLowerCase()
     let color = "green"
     setALUMode(mode)
@@ -1128,6 +1155,9 @@ function animateCOMPUTE(mode, registerName) {
 }
 
 function animateCOMPUTERegisterOnly(mode, source, dest) {
+    if (!config.showAnimation) {
+        return
+    }
     source = registerNames[source].toLowerCase()
     dest = registerNames[dest].toLowerCase()
     let color = "green"
@@ -1203,18 +1233,29 @@ function animateCOMPUTERegisterOnly(mode, source, dest) {
 }
 
 function draw() {
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    if (!config.showAnimation) {
+        return
+    }
+    let stageWidth = 1600
+    let stageHeight = 980
+
+    let container = document.querySelector('#container')
+
+    let containerWidth = container.offsetWidth
+    let containerHeight = container.offsetHeight
+
+    let scaleX = containerWidth / stageWidth
+    let scaleY = containerHeight / stageHeight
 
     stage = new Konva.Stage({
         container: 'container',
-        width: width,
-        height: height,
+        width: containerWidth,
+        height: containerHeight,
     });
 
     layer = new Konva.Layer({
-        scaleX: 0.7,
-        scaleY: 0.7,
+        scaleX: scaleX,
+        scaleY: scaleY,
     });
     layer.listening(false)
     // Draw registers

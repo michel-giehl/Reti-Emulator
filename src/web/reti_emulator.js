@@ -10,6 +10,7 @@ import {
     animateSTORE,
     animateSTOREIN
 } from "./canvas_test/konva/index.js"
+import { config } from "./global_vars.js"
 
 const SRAM_SIZE = (1 << 16)
 const EPROM_SIZE = (1 << 16)
@@ -62,7 +63,7 @@ class ReTi {
 
     memRead(addr, register = null, seg = DS) {
         let segment = this.registers[seg] >>> 30
-        let data = this.memoryMap[segment][addr] | 0
+        let data = this.memoryMap[segment][addr] || 0
         if (register != null) {
             this.registers[register] = data
             return

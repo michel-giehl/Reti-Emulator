@@ -1,6 +1,6 @@
 
 import { compile } from "./api.js"
-import { nextReTiState, run_code } from "./run_code.js"
+import { nextReTiState, run_code, updateClockSpeed } from "./run_code.js"
 import { config } from "./global_vars.js"
 
 function changeNumberStyle(base) {
@@ -33,14 +33,23 @@ function insertSymbolTable(symbolTablePretty) {
     config.editor.setValue(symbolTableString + codeWithoutSymbolTable(config.editor.getValue()))
 }
 
-async function compileAndRun(language = config.mode, startTime = Date.now()) {
+function statusText(text) {
     let statusElement = $('#status-message')
-    // statusElement.text(`Compiling...`)
+    statusElement.text(text)
+    setTimeout(() => {
+        if (statusElement.text() === text) {
+            statusElement.text("")
+        }
+    }, 2500)
+}
+
+async function compileAndRun(language = config.mode, startTime = Date.now()) {
+    statusText(`Compiling...`)
     let code = config.mode === language ? config.editor.getValue() : (language === "picoc" ? config.picoCCode : config.retiCode)
     let response = await compile(code, language)
     if (response.error || response.warnings_and_errors) {
         console.log("ERRORRRRR")
-        statusElement.text(response.error || response.warnings_and_errors)
+        statusText(response.error || response.warnings_and_errors)
         return
     }
     if (language === "picoc") {
@@ -51,7 +60,8 @@ async function compileAndRun(language = config.mode, startTime = Date.now()) {
     } else {
         run_code(response.code)
     }
-    statusElement.text(`Compilation successful (finished after ${Date.now() - startTime}ms)`)
+    statusText(`Compilation successful (finished after ${Date.now() - startTime}ms)`)
+
 }
 
 function switchToReTiCodeWindow() {
@@ -87,7 +97,7 @@ $(function() {
         if (config.paused) {
             document.getElementById("stop").value = "Unpause"
             document.getElementById("forward").hidden = false
-            document.getElementById("backward").hidden = false
+            // document.getElementById("backward").hidden = false
         } else {
             document.getElementById("stop").value = "Pause"
             document.getElementById("forward").hidden = true
@@ -116,14 +126,30 @@ $(function() {
 
 
     $('#backward').click(function() {
+        alert("Work in progress")
     })
 
 
     $('#clockspeed').change(function() {
+        updateClockSpeed()
     })
 
 
     $('#run').click(async function() {
         compileAndRun()
+    })
+
+    $('#yes').change(function() {
+        if ($(this).prop("checked")) {
+            $('#container').show()
+            config.showAnimation = true
+        }
+    })
+
+    $('#no').change(function() {
+        if ($(this).prop("checked")) {
+            $('#container').hide()
+            config.showAnimation = false
+        }
     })
 })

@@ -27,6 +27,8 @@ def register(s):
 def compile_load(args):
     if args[0] not in load_instructions:
         raise CompilationError(f'Invalid Instruction "{args[0]}"')
+    if len(args) < 3:
+        raise CompilationError("Not enough arguments provided")
     instr = load_instructions[args[0]]
     try:
         if args[0] == "LOAD":

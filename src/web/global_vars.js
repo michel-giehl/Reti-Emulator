@@ -1,7 +1,7 @@
 import { retiValidator, picocCValidator } from "./linters.js"
 
 const config = {
-  numberStyle: 16,
+  numberStyle: 10,
   reti: null,
   fetch: null,
   paused: false,
@@ -10,7 +10,8 @@ const config = {
   timer: null,
   editor: null,
   retiCode: null,
-  picoCCode: null
+  picoCCode: null,
+  showAnimation: true,
 }
 
 const registerNames = ["PC", "IN1", "IN2", "ACC", "SP", "BAF", "CS", "DS", "I"]
@@ -44,6 +45,11 @@ config.picoCCode = "void main() {" +
 "\n}"
 
 $(function() {
+  // Load defaults
+  $('#yes').prop("checked", true)
+  $('#no').prop("checked", false)
+  $('#advanced').prop("checked", true)
+  $('#clockspeed').val(5)
   config.editor = CodeMirror.fromTextArea(document.getElementById("code-window"),
   {
       mode: "reti",

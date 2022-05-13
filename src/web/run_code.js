@@ -31,6 +31,21 @@ function run_code(code) {
     }, animationSpeed)
 }
 
+function updateClockSpeed() {
+    if (config.reti == null)
+        return
+    let animationSpeed = 1000 / $("#clockspeed").val()
+    if (config.running) {
+        clearInterval(config.timer)
+    }
+    config.timer = setInterval(() => {
+        if (!config.paused) {
+            nextReTiState()
+        }
+    }, animationSpeed)
+}
+
+
 function display_state() {
     let reti = config.reti
     let num = reti.registers[PC]
@@ -48,7 +63,7 @@ function display_state() {
     }
     reset_sram_and_uart_display()
     // Display sram
-    for (let i = sram.length; i > reti.bds; i--) {
+    for (let i = sram.length; i >= 0; i--) {
         let data = sram[i]
         if (data !== undefined) {
             $('#sram-table').after(`<tr class="sram-data"><th>${i}</th><th>${stringifyNumber(data)}</th></tr>`)
@@ -103,4 +118,4 @@ function stringifyNumber(num) {
     return num
 }
 
-export { run_code, nextReTiState };
+export { run_code, nextReTiState, updateClockSpeed };
