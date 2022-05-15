@@ -4,29 +4,25 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Online IDE &amp; Emulator for the advanced ReTi</title>
         <!-- EXTERNAL -->
-        <link rel="stylesheet" href="codemirror/lib/codemirror.css">
-        <link rel="stylesheet" href="codemirror/addon/lint.css">
-        <link rel="stylesheet" href="codemirror/theme/monokai.css">
-        <link rel="stylesheet" href="codemirror/theme/solarized.css">
-        <link rel="stylesheet" href="codemirror/theme/neat.css">
-        <link rel="stylesheet" href="codemirror/theme/material-darker.css">
-        <script src="codemirror/lib/codemirror.js"></script>
-        <script src="codemirror/mode/reti.js"></script>
-        <script src="codemirror/mode/clike.js"></script>
-        <script src="codemirror/addon/lint.js"></script>
-        <script src="jquery.min.js"></script>
+        <link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="../codemirror/addon/lint.css">
+        <link rel="stylesheet" href="../codemirror/theme/monokai.css">
+        <link rel="stylesheet" href="../codemirror/theme/solarized.css">
+        <link rel="stylesheet" href="../codemirror/theme/neat.css">
+        <link rel="stylesheet" href="../codemirror/theme/material-darker.css">
+        <script src="../codemirror/lib/codemirror.js"></script>
+        <script src="../codemirror/mode/reti_simple.js"></script>
+        <script src="../codemirror/mode/clike.js"></script>
+        <script src="../codemirror/addon/lint.js"></script>
+        <script src="../jquery.min.js"></script>
         <!-- EEEEEEEEEE -->
         <script src="https://unpkg.com/konva@8.3.5/konva.min.js"></script>
         <!-- MY STUFF -->
         <link type="text/css" rel="stylesheet" href="style.css"/>
-        <script type="module" src="api.js"></script>
         <script type="module" src="global_vars.js"></script>
-        <script type="module" src="linters.js"></script>
         <script type="module" src="run_code.js"></script>
-        <script type="module" src="reti_emulator.js"></script>
+        <script type="module" src="simple_reti_emulator.js"></script>
         <script type="module" src="controls.js"></script>
-        <script type="module" src="reti_decompiler.js"></script>
-        <script type="module" src="./canvas_test/konva/index.js"></script>
     </head>
 
     <body>
@@ -50,25 +46,16 @@
                 <!--<input type="checkbox" id="decimal-selector" name="checkbox" value="false"/> -->
             </div>
             <div class="toolbar-item">
+                <!-- <span>UART Data</span>
+                <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/> -->
                 <span>Mode:</span>
-                <input type="radio" id="simple" name="retiMode">
+                <input type="radio" id="simple" name="retiMode" checked>
                 <label for="simple">Einfache ReTI (TI)</label>
-                <input type="radio" id="advanced" name="retiMode" checked>
+                <input type="radio" id="advanced" name="retiMode">
                 <label for="advanced">Erweiterte ReTI (Betriebssysteme)</label>
             </div>
             <div class="toolbar-item">
-                <span>Show animation (BETA):</span>
-                <input type="radio" id="yes" name="showAnimation" checked>
-                <label for="yes">Yes</label>
-                <input type="radio" id="no" name="showAnimation">
-                <label for="no">No</label>
-            </div>
-            <div class="toolbar-item">
-                <span>UART Data</span>
-                <input type="text" id="uart-data" value="112,192,0,42,112,0,0,0"/>
-            </div>
-            <div class="toolbar-item">
-                <span>Editor Theme</span>
+                <span>Theme</span>
                 <select id="theme-selector">
                     <option selected>monokai</option>
                     <option>material-darker</option>
@@ -80,10 +67,6 @@
                 <span id="status-message"></span>
             </div>
         </div>
-        <div id="code-window-selector">
-            <button class="navbar-item" id="navbar-select-reti" disabled>ReTi</button>
-            <button class="navbar-item" id="navbar-select-picoc">Pico C</button>
-        </div>
         <textarea id="code-window"></textarea>
 
         <div class="state-window">
@@ -91,8 +74,6 @@
                 <p id="instruction-counter">Instruction </p>
                 <p id="instruction-decoded">None</p>
             </div>
-            <!-- ReTI Animation -->
-            <div id="container" style="width: 80%; height: 80%;"></div>
             <div class="register-container">
                 <div class="register-item">
                     <span>PC</span>
@@ -110,26 +91,6 @@
                     <span>ACC</span>
                     <p id="register-value-acc">0</p>
                 </div>
-                <div class="register-item">
-                    <span>SP</span>
-                    <p id="register-value-sp">0</p>
-                </div>
-                <div class="register-item">
-                    <span>BAF</span>
-                    <p id="register-value-baf">0</p>
-                </div>
-                <div class="register-item">
-                    <span>CS</span>
-                    <p id="register-value-cs">0</p>
-                </div>
-                <div class="register-item">
-                    <span>DS</span>
-                    <p id="register-value-ds">0</p>
-                </div>
-                <div class="register-item">
-                    <span>I</span>
-                    <p id="register-value-i">0</p>
-                </div>
             </div>
             <div class="memory-container">
                 <div class="memory-item-1">
@@ -141,21 +102,11 @@
                         </tr>
                     </table>
                 </div>
-                <div class="memory-item-2">
-                    <span>UART</span>
-                    <table>
-                        <tr id="uart-table">
-                            <th>ADDR</th>
-                            <th>DATA</th>
-                        </tr>
-                    </table>
-                </div>
             </div>
         </div>
 
-
         <div id="sources">
-            <b>Advanced ReTi IDE &amp; Emulator</b>
+            <b>Simple ReTI IDE &amp; Emulator</b>
             | <a id="source-code-link" href="https://github.com/michel-giehl/Reti-Emulator">Source code</a>
         </div>
     </body> 

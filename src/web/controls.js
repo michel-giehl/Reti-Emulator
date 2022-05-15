@@ -152,4 +152,8 @@ $(function() {
             config.showAnimation = false
         }
     })
+
+    $('#simple').change(function() {
+        window.location.href = "/ti/index.html";
+    })
 })

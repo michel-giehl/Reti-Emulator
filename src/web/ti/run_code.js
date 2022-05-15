@@ -1,34 +1,41 @@
 import { config, registerNames } from "./global_vars.js"
-import { ReTi, PC, I } from "./reti_emulator.js"
-import { decompile } from "./reti_decompiler.js"
-import { draw } from "./canvas_test/konva/index.js"
+import { ReTi, PC, I } from "./simple_reti_emulator.js"
 
 function nextReTiState() {
-    draw()
-    if (config.fetch) {
+    try {
         config.reti.fetch()
-    } else {
+        display_state()
         config.reti.execute()
+    } catch(e) {
+        statusText(e)
+        if (config.running) {
+            clearInterval(config.timer)
+        }
+        throw e
     }
-    display_state()
-    config.fetch = !config.fetch
+}
+
+function statusText(text) {
+    let statusElement = $('#status-message')
+    statusElement.text(text)
+    setTimeout(() => {
+        if (statusElement.text() == text) {
+            statusElement.text("")
+        }
+    }, 5000)
 }
 
 function run_code(code) {
-    let animationSpeed = 1000 / $("#clockspeed").val()
-    if (config.running) {
-        clearInterval(config.timer)
-    }
     config.running = true
     reset_sram_and_uart_display()
     config.reti = new ReTi()
-    config.reti.readProgram(code)
-    config.fetch = true
-    config.timer = setInterval(() => {
-        if (!config.paused) {
-            nextReTiState()
-        }
-    }, animationSpeed)
+    try {
+        config.reti.readProgram(code)
+    } catch(e) {
+        statusText(e)
+        throw e
+    }
+    updateClockSpeed()
 }
 
 function updateClockSpeed() {
@@ -38,6 +45,7 @@ function updateClockSpeed() {
     if (config.running) {
         clearInterval(config.timer)
     }
+    display_state()
     config.timer = setInterval(() => {
         if (!config.paused) {
             nextReTiState()
@@ -51,10 +59,10 @@ function display_state() {
     let num = reti.registers[PC]
     let sram = reti.sram
     let uart = reti.uart
-    $("#instruction-counter").text(`Instruction ${num + 1} | ${config.fetch ? "FETCH" : "EXECUTE"}`)
-    $("#instruction-decoded").text(decompile(reti.registers[I]))
+    $("#instruction-counter").text(`Instruction ${num + 1}/${config.reti.bds - 1}`)
+    $("#instruction-decoded").text(reti.registers[I])
     // Display registers
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 4; i++) {
         let registerName = registerNames[i];
         let element = $(`#register-value-${registerName.toLowerCase()}`)
         if (element) {
@@ -66,14 +74,9 @@ function display_state() {
     for (let i = sram.length; i >= 0; i--) {
         let data = sram[i]
         if (data !== undefined) {
-            $('#sram-table').after(`<tr class="sram-data"><th>${i}</th><th>${stringifyNumber(data)}</th></tr>`)
+            $('#sram-table').after(`<tr class="sram-data"><th>${i}</th><th>${typeof data === 'number' ? stringifyNumber(data) : data}</th></tr>`)
         }
             
-    }
-    // Display UART
-    for (let i = 0; i < uart.length; i++) {
-        let data = uart[i]
-        $('#uart-table').after(`<tr class="uart-data"><th>${i}</th><th>${data.toString(2).padStart(8, "0")}</th></tr>`)
     }
 }
 

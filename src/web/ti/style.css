@@ -11,6 +11,8 @@ body {
 
 table {
     width: 100%;
+    position: relative;
+    align-items: center;
 }
 
 tr:nth-child(even) {
@@ -19,17 +21,6 @@ tr:nth-child(even) {
 
 #container {
     background-color: aliceblue;
-}
-
-#code-window-selector {
-    position: relative;
-    padding: 5px;
-    text-align: center;
-    height: 30px;
-    display: inline-block;
-    width: 31%;
-    left: 1;
-    background: rgb(35, 35, 35);
 }
 
 #status-message {
@@ -56,28 +47,6 @@ tr:nth-child(even) {
     padding: 10px;
 }
 
-/* NAVBAR */
-.navbar-item {
-    height: 100%;
-    width: 49%;
-    background-color: inherit;
-    display: inline-block;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    color: white;
-}
-
-.navbar-item:disabled {
-    background-color: rgb(61, 61, 61);
-}
-
-.navbar-item:hover {
-    background-color: rgb(61,61,61);
-}
-
-
 /* REGISTER */
 .register-container {
     position: relative;
@@ -89,7 +58,7 @@ tr:nth-child(even) {
     padding: 5px;
     margin-top: 10px;
     text-align: center;
-    width: 8%;
+    width: 20%;
     height: 60px;
     display: inline-block;
     background-color: #333;
@@ -104,7 +73,7 @@ tr:nth-child(even) {
 .memory-item-1 {
     text-align: center;
     position: absolute;
-    width: 45%;
+    width: 100%;
     left: 0;
     margin-top: 10px;
 }
@@ -137,7 +106,7 @@ tr:nth-child(even) {
 .state-window {
     overflow-y: auto;
     border: 1px solid rgb(50, 50, 50);
-    width: 66%;
+    width: 48%;
     height: 78%;
     position: absolute;
     padding: 10px;
@@ -146,7 +115,7 @@ tr:nth-child(even) {
 
 .CodeMirror {
     border: 1px solid rgb(50, 50, 50);
-    width: 30%;
+    width: 48%;
     height: 78%;
     position: absolute;
     padding: 10px;

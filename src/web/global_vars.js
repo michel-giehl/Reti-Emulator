@@ -48,7 +48,6 @@ $(function() {
   // Load defaults
   $('#yes').prop("checked", true)
   $('#no').prop("checked", false)
-  $('#advanced').prop("checked", true)
   $('#clockspeed').val(5)
   config.editor = CodeMirror.fromTextArea(document.getElementById("code-window"),
   {
