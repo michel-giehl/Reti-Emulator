@@ -59,7 +59,7 @@ function display_state() {
     let num = reti.registers[PC]
     let sram = reti.sram
     let uart = reti.uart
-    $("#instruction-counter").text(`Instruction ${num + 1}/${config.reti.bds - 1}`)
+    $("#instruction-counter").text(`Instruction ${num}/${config.reti.bds - 2}`)
     $("#instruction-decoded").text(reti.registers[I])
     // Display registers
     for (let i = 0; i < 4; i++) {
@@ -74,7 +74,11 @@ function display_state() {
     for (let i = sram.length; i >= 0; i--) {
         let data = sram[i]
         if (data !== undefined) {
-            $('#sram-table').after(`<tr class="sram-data"><th>${i}</th><th>${typeof data === 'number' ? stringifyNumber(data) : data}</th></tr>`)
+            let style = ""
+            if (i == reti.registers[PC]) {
+                style = "background-color: green"
+            }
+            $('#sram-table').after(`<tr class="sram-data" style="${style}"><th>${i}</th><th>${typeof data === 'number' ? stringifyNumber(data) : data}</th></tr>`)
         }
             
     }

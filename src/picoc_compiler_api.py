@@ -41,7 +41,7 @@ async def _start_sub_process(file_name: str, picoc_code: str) -> str:
   # write pico c file
   with open(f"{file_name}.picoc", "w") as f:
     f.write(picoc_code)
-  command = f"pico_c_compiler -v -s {file_name}.picoc"
+  command = f"picoc_compiler -v -s {file_name}.picoc"
   proc = await asyncio.create_subprocess_shell(command, stdout=asyncio.subprocess.PIPE)
 
   # return stdout

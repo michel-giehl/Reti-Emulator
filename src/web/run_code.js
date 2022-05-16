@@ -66,7 +66,11 @@ function display_state() {
     for (let i = sram.length; i >= 0; i--) {
         let data = sram[i]
         if (data !== undefined) {
-            $('#sram-table').after(`<tr class="sram-data"><th>${i}</th><th>${stringifyNumber(data)}</th></tr>`)
+            let style = ""
+            if (i == reti.registers[PC]) {
+                style = "background-color: green"
+            }
+            $('#sram-table').after(`<tr class="sram-data" style="${style}"><th>${i}</th><th>${i < reti.bds && config.numberStyle !== 2 ? decompile(Number.parseInt(data)) : stringifyNumber(data)}</th></tr>`)
         }
             
     }

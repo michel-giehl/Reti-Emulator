@@ -61,7 +61,6 @@ async function compileAndRun(language = config.mode, startTime = Date.now()) {
         run_code(response.code)
     }
     statusText(`Compilation successful (finished after ${Date.now() - startTime}ms)`)
-
 }
 
 function switchToReTiCodeWindow() {
@@ -137,6 +136,7 @@ $(function() {
 
     $('#run').click(async function() {
         compileAndRun()
+        await fetch('/sentry/run', {method: 'POST', headers: {'Type': 'Advanced ReTI'}})
     })
 
     $('#yes').change(function() {

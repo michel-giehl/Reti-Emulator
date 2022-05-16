@@ -63,6 +63,7 @@ $(function() {
 
     $('#run').click(async function() {
         run_code(config.editor.getValue())
+        await fetch('/sentry/run', {method: 'POST', headers: {'Type': 'Simple ReTI'}})
     })
 
 

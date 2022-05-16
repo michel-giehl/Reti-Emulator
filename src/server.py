@@ -10,12 +10,11 @@ import asyncio
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask import Flask, send_from_directory, request, jsonify
-
+from prometheus_flask_exporter import PrometheusMetrics
 
 # Flask App
 app = Flask(__name__)
-# Custom JSONEncoder
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+metrics = PrometheusMetrics(app, path='/metrics')
 # Rate Limiter
 limiter = Limiter(app, key_func=get_remote_address)
 
@@ -26,18 +25,6 @@ async def ratelimit_handler(e):
     """
     return "You are being rate limited", 429
 
-@app.after_request
-def add_header(r):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    r.headers["Pragma"] = "no-cache"
-    r.headers["Expires"] = "0"
-    r.headers['Cache-Control'] = 'public, max-age=0'
-    return r
-
 @app.route('/<path:path>')
 @app.route('/')
 async def send(path = 'index.html'):
@@ -45,6 +32,12 @@ async def send(path = 'index.html'):
     Route static files
     """
     return send_from_directory('web/', path)
+
+@app.route('/sentry/run', methods=['POST'])
+@metrics.counter('simulations_run_by_type', 'Number of simulations by type',
+         labels={'type': lambda: request.headers.get('Type')})
+def sentry_run():
+    return ""
 
 @app.route('/compile', methods=['POST'])
 async def compile():
@@ -75,4 +68,4 @@ async def compile():
 
 
 if __name__ == '__main__':
-    app.run(host=os.getenv("HOST") or "127.0.0.1", debug=True, port=int(os.getenv("PORT") or 8000))
+    app.run(host=os.getenv("HOST") or "127.0.0.1", debug=False, port=int(os.getenv("PORT") or 8000))

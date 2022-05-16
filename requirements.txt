@@ -2,3 +2,4 @@ Flask[async]
 flask-limiter
 asyncio
 tabulate
+prometheus-flask-exporter
