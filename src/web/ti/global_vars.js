@@ -10,7 +10,7 @@ const config = {
 
 const registerNames = ["PC", "IN1", "IN2", "ACC", "I"]
 
-config.retiCode = 'LOADI ACC 55 ; Hi'
+config.retiCode = 'JUMP 0'
 
 $(function() {
   // Load defaults

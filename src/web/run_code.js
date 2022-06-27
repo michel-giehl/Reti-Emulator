@@ -1,29 +1,117 @@
 import { config, registerNames } from "./global_vars.js"
 import { ReTi, PC, I } from "./reti_emulator.js"
 import { decompile } from "./reti_decompiler.js"
-import { draw } from "./canvas_test/konva/index.js"
+import { animateCOMPUTE, animateCOMPUTEI, animateCOMPUTERegisterOnly, animateFetch, animateLOAD, animateLOADI, animateLOADIN, animateMOVE, animateSTORE, animateSTOREIN, draw } from "./canvas.js"
+
+
+function doAnimate() {
+    if (config.fetch) {
+        animateFetch(config.phase)
+    } else {
+        let reti = config.reti
+        let command = decompile(reti.registers[I])
+        let args = command.split(" ")
+        // LOAD & STORE
+        switch (args[0]) {
+            case "LOAD":
+                animateLOAD(args[1], config.phase)
+                break
+            case "LOADIN":
+                animateLOADIN(args[1], args[2], config.phase)
+                break
+            case "LOADI":
+                animateLOADI(args[1], config.phase)
+                break
+            case "STORE":
+                animateSTORE(args[1], config.phase)
+                break
+            case "STOREIN":
+                animateSTOREIN(args[1], args[2], config.phase)
+                break
+            case "MOVE":
+                animateMOVE(args[1], args[2], config.phase)
+                break
+        }
+        // COMPUTE
+        const computeCommands = ["ADD", "SUB", "MUL", "DIV", "MOD", "OPLUS", "OR", "AND"]
+        const computeICommands = computeCommands.map(cmd => cmd + "I")
+        if (computeICommands.includes(args[0])) {
+            animateCOMPUTEI(computeICommands.indexOf(args[0]), args[1], config.phase)
+        } else if (computeCommands.includes(args[0])) {
+            let registerOnly = registerNames.includes(args[2])
+            let mode = computeCommands.indexOf(args[0])
+            if (registerOnly) {
+                animateCOMPUTERegisterOnly(mode, args[2], args[1], config.phase)
+            } else {
+                animateCOMPUTE(mode, args[1], config.phase)
+            }
+        }
+        // JUMP
+        if (args[0].startsWith("JUMP")) {
+            animateCOMPUTEI(0, "PC")
+        }
+    }
+}
+
+function previousReTiState() {
+    config.phase--
+    if (config.phase === -1) {
+        if (config.retiStates.length === 0) {
+            alert("Can't go back")
+            config.phase = 0
+            return
+        }
+        config.phase = config.fetch ? 3 : 2
+        config.fetch = !config.fetch
+        config.reti = config.retiStates.pop()
+    }
+    draw(config.reti)
+    doAnimate()
+    display_state()
+}
 
 function nextReTiState() {
-    draw()
-    if (config.fetch) {
-        config.reti.fetch()
-    } else {
-        config.reti.execute()
+    if (config.phase === 0) {
+        config.retiStates.push(new ReTi(config.reti))
+        if (config.retiStates.length >= config.undoAmount) {
+            config.retiStates.shift()
+        }
+        if (config.fetch) {
+            config.reti.fetch()
+        } else {
+            config.reti.execute()
+        }
     }
+    config.phase++
+    if (config.fetch && config.phase == 3) {
+        config.fetch = false
+        config.phase = 0
+    } else if (!config.fetch && config.phase == 4) {
+        config.fetch = true
+        config.phase = 0
+    }
+    draw(config.reti)
+    doAnimate()
     display_state()
-    config.fetch = !config.fetch
 }
 
 function run_code(code) {
+    // clear retiStates
+    config.retiStates = []
     let animationSpeed = 1000 / $("#clockspeed").val()
     if (config.running) {
         clearInterval(config.timer)
     }
     config.running = true
-    reset_sram_and_uart_display()
     config.reti = new ReTi()
     config.reti.readProgram(code)
     config.fetch = true
+    config.phase = 0
+    config.reti.fetch()
+    reset_sram_and_uart_display()
+    draw(config.reti)
+    doAnimate()
+    display_state()
     config.timer = setInterval(() => {
         if (!config.paused) {
             nextReTiState()
@@ -51,7 +139,7 @@ function display_state() {
     let num = reti.registers[PC]
     let sram = reti.sram
     let uart = reti.uart
-    $("#instruction-counter").text(`Instruction ${num + 1} | ${config.fetch ? "FETCH" : "EXECUTE"}`)
+    $("#instruction-counter").text(`Instruction ${num + 1} | ${config.fetch ? "FETCH P" : "EXECUTE P"}${config.phase}`)
     $("#instruction-decoded").text(decompile(reti.registers[I]))
     // Display registers
     for (let i = 0; i < 9; i++) {
@@ -72,7 +160,7 @@ function display_state() {
             }
             $('#sram-table').after(`<tr class="sram-data" style="${style}"><th>${i}</th><th>${i < reti.bds && config.numberStyle !== 2 ? decompile(Number.parseInt(data)) : stringifyNumber(data)}</th></tr>`)
         }
-            
+
     }
     // Display UART
     for (let i = 0; i < uart.length; i++) {
@@ -90,14 +178,14 @@ function convertToUpperNumber(num) {
     const upperNumbers = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹']
     let i = 125421;
     let numbers = []
-    while (num > 0){
-      numbers.push(num % 10)
-      num -= num % 10
-      num /=10
+    while (num > 0) {
+        numbers.push(num % 10)
+        num -= num % 10
+        num /= 10
     }
     numbers.reverse()
     let str = ""
-    for(let n of numbers) {
+    for (let n of numbers) {
         str += upperNumbers[n]
     }
     return `${str}`
@@ -127,4 +215,4 @@ function stringifyNumber(num) {
     return num
 }
 
-export { run_code, nextReTiState, updateClockSpeed };
+export { run_code, previousReTiState, nextReTiState, updateClockSpeed, stringifyNumber };

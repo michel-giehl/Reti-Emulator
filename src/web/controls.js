@@ -1,6 +1,6 @@
 
 import { compile } from "./api.js"
-import { nextReTiState, run_code, updateClockSpeed } from "./run_code.js"
+import { previousReTiState, nextReTiState, run_code, updateClockSpeed } from "./run_code.js"
 import { config } from "./global_vars.js"
 
 function changeNumberStyle(base) {
@@ -48,7 +48,6 @@ async function compileAndRun(language = config.mode, startTime = Date.now()) {
     let code = config.mode === language ? config.editor.getValue() : (language === "picoc" ? config.picoCCode : config.retiCode)
     let response = await compile(code, language)
     if (response.error || response.warnings_and_errors) {
-        console.log("ERRORRRRR")
         statusText(response.error || response.warnings_and_errors)
         return
     }
@@ -96,7 +95,7 @@ $(function() {
         if (config.paused) {
             document.getElementById("stop").value = "Unpause"
             document.getElementById("forward").hidden = false
-            // document.getElementById("backward").hidden = false
+            document.getElementById("backward").hidden = false
         } else {
             document.getElementById("stop").value = "Pause"
             document.getElementById("forward").hidden = true
@@ -125,12 +124,24 @@ $(function() {
 
 
     $('#backward').click(function() {
-        alert("Work in progress")
+        if (config.running) {
+            previousReTiState()
+        }
     })
 
 
     $('#clockspeed').change(function() {
         updateClockSpeed()
+        if ($(this).val() <= 1) {
+            $(this).attr("step", "0.1")
+        } else if ($(this).val() == "1.1") {
+            $(this).val("2")
+            $(this).attr("step", "1")
+        } else if ($(this).val() == "0") {
+            $(this).val("0.1")
+        } else {
+            $(this).attr("step", "1")
+        }
     })
 
 

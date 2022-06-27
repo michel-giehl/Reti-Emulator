@@ -27,7 +27,8 @@ async def ratelimit_handler(e):
 
 @app.route('/<path:path>')
 @app.route('/')
-async def send(path = 'index.html'):
+@metrics.do_not_track()
+def send(path = 'index.html'):
     """
     Route static files
     """
@@ -68,4 +69,4 @@ async def compile():
 
 
 if __name__ == '__main__':
-    app.run(host=os.getenv("HOST") or "127.0.0.1", debug=False, port=int(os.getenv("PORT") or 8000))
+    app.run(host=os.getenv("HOST") or "127.0.0.1", debug=True, port=int(os.getenv("PORT") or 8000))

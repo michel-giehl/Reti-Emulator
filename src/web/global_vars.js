@@ -3,7 +3,9 @@ import { retiValidator, picocCValidator } from "./linters.js"
 const config = {
   numberStyle: 10,
   reti: null,
+  retiStates: [],
   fetch: null,
+  phase: 0,
   paused: false,
   running: false,
   mode: "reti",
@@ -12,6 +14,7 @@ const config = {
   retiCode: null,
   picoCCode: null,
   showAnimation: true,
+  undoAmount: 20,
 }
 
 const registerNames = ["PC", "IN1", "IN2", "ACC", "SP", "BAF", "CS", "DS", "I"]

@@ -1,15 +1,3 @@
-import {
-    animateCOMPUTE,
-    animateCOMPUTERegisterOnly,
-    animateCOMPUTEI,
-    animateFetch,
-    animateLOAD,
-    animateLOADI,
-    animateLOADIN,
-    animateMOVE,
-    animateSTORE,
-    animateSTOREIN
-} from "./canvas_test/konva/index.js"
 import { config } from "./global_vars.js"
 
 const SRAM_SIZE = (1 << 16)
@@ -26,23 +14,38 @@ const I = 8
 
 class ReTi {
 
-    constructor() {
-        this.registers = new Array(9).fill(0)
-        this.registers[CS] = (1 << 31) >>> 0
-        this.registers[SP] = SRAM_SIZE - 1
+    constructor(reti) {
+        // create deep copy if argument is provided
+        if (reti) {
+            this.registers = [...reti.registers]
+            this.uart = [...reti.uart]
+            this.sram = [...reti.sram]
+            this.eprom = [...reti.eprom]
+            this.memoryMap = {
+                0: this.eprom,
+                1: this.uart,
+                2: this.sram,
+                3: this.eprom
+            }
+            this.bds = reti.bds
+        } else {
+            this.registers = new Array(9).fill(0)
+            this.registers[CS] = (1 << 31) >>> 0
+            this.registers[SP] = SRAM_SIZE - 1
 
-        this.uart = new Array(8).fill(0)
+            this.uart = new Array(8).fill(0)
 
-        this.sram = new Array(SRAM_SIZE)
-        this.eprom = new Array(EPROM_SIZE)
-        this.memoryMap = {
-            0: this.eprom,
-            1: this.uart,
-            2: this.sram,
-            3: this.eprom
+            this.sram = new Array(SRAM_SIZE)
+            this.eprom = new Array(EPROM_SIZE)
+            this.memoryMap = {
+                0: this.eprom,
+                1: this.uart,
+                2: this.sram,
+                3: this.eprom
+            }
+            this.bds = 0
+            this.#loadConstants()
         }
-        this.bds = 0
-        this.#loadConstants()
     }
 
     readProgram(code) {
@@ -73,7 +76,6 @@ class ReTi {
 
     fetch() {
         this.memRead(this.registers[PC], I, CS)
-        animateFetch()
     }
 
     execute() {
@@ -103,15 +105,12 @@ class ReTi {
         switch (mode) {
             case 0b00: // LOAD
                 this.memRead(param, dest)
-                animateLOAD(dest)
                 break
             case 0b01: // LOADIN
                 this.memRead(this.registers[addr] + this.#toSigned(param), dest)
-                animateLOADIN(addr, dest)
                 break
             case 0b11: // LOADI
                 this.registers[dest] = param
-                animateLOADI(dest)
                 break
         }
         this.registers[PC]++
@@ -125,15 +124,12 @@ class ReTi {
         switch (mode) {
             case 0b00: // STORE
                 this.memWrite(param, this.registers[source])
-                animateSTORE(source)
                 break
             case 0b01: // STOREIN
                 this.memWrite(this.registers[dest] + this.#toSigned(param), this.registers[source])
-                animateSTOREIN(source, dest)
                 break
             case 0b11: // MOVE
                 this.registers[dest] = this.#to32Bit(this.registers[source])
-                animateMOVE(source, dest)
                 // don't increase PC if destination is PC
                 if (dest == PC) {
                     return
@@ -164,6 +160,7 @@ class ReTi {
 
         if (conditionMap[condition]) {
             this.registers[PC] += param
+            // animateCOMPUTEI(0, 0)
         } else {
             this.registers[PC]++
         }
@@ -212,14 +209,6 @@ class ReTi {
         }
         this.registers[dest] = this.#to32Bit(r)
         this.registers[PC]++
-        // animation
-        if (computeImmidiate) {
-            animateCOMPUTEI(func, dest)
-        } else if(registerOnly) {
-            animateCOMPUTERegisterOnly(func, source, dest)
-        } else {
-            animateCOMPUTE(func, dest)
-        }
     }
 
     #loadConstants() {
