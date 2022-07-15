@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../../ReTi-Emulator"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../PicoC-Compiler"
+		}
+	],
+	"settings": {}
+}

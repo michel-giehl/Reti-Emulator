@@ -1,3 +1,12 @@
 .git
 src/__pycache__
-.venv/
+FlaskApp/.venv/
+Web-Redesign/.svelte-kit/
+Web-Redesign/.vscode/
+Web-Redesign/node_modules
+Web-Redesign/.DS_Store
+Web-Redesign/build
+Web-Redesign/package
+Web-Redesign/.env
+Web-Redesign/.env.*
+!Web-Redesign/.env.example
