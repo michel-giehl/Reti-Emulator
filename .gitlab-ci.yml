@@ -30,5 +30,3 @@ deploy:
     - docker run -d -p 8000:8000 --name reti-simulator $TAG_COMMIT
   environment:
     name: production
-    only:
-      - main
