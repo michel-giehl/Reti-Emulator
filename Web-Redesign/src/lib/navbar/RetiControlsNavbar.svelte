@@ -1,9 +1,4 @@
 <script lang="ts">
-	import Navbar from '$lib/navbar/builder/Navbar.svelte';
-	import SideBarIcon from '$lib/navbar/builder/SideBarIcon.svelte';
-	import Dropdown from '$lib/navbar/builder/Dropdown.svelte';
-	import RightAlign from '$lib/navbar/builder/RightAlign.svelte';
-
 	import Pause from 'svelte-material-icons/Pause.svelte';
 	import Rewind from 'svelte-material-icons/Rewind.svelte';
 	import FastForward from 'svelte-material-icons/FastForward.svelte';
@@ -12,7 +7,6 @@
 	import Pound from 'svelte-material-icons/Pound.svelte';
 	import MovieOpenPlayOutline from 'svelte-material-icons/MovieOpenPlayOutline.svelte';
 
-	export let size: string;
 	export let clockspeedOptions: Array<number>;
 	export let numberStyles: Array<string>;
 </script>

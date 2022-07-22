@@ -40,7 +40,7 @@
     }
 
     .navbar-tooltip {
-        @apply absolute w-auto p-2 m-2 min-w-max bottom-12 z-10 rounded-md shadow-md shadow-black text-white bg-slate-800 text-xs font-bold transition-all duration-100 scale-0 origin-bottom;
+        @apply absolute w-auto p-2 m-1 min-w-max z-10 rounded-md shadow-sm shadow-black text-white bg-slate-800 text-xs font-bold hidden transition-all duration-100 origin-bottom -translate-y-12;
     }
 
     .register {

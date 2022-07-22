@@ -38,7 +38,7 @@
 	<div class="flex flex-row w-screen">
 		<EditorControlsNavBar {size} {themes} />
 		<div class="divider divider-horizontal" />
-		<RetiControlsNavbar {size} {clockspeedOptions} {numberStyles}/>
+		<RetiControlsNavbar {clockspeedOptions} {numberStyles}/>
 	</div>
 
 	<div id="main-container" class="flex flex-row w-screen h-5/6">
@@ -50,6 +50,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-</style>

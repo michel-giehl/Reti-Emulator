@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 
 	let code = `LOADI ACC 0`;
 
 	onMount(() => {
-		let editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+		// Create editor
+		const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
 			mode: 'reti',
 			lineNumbers: true,
 			lineWrapping: false,
