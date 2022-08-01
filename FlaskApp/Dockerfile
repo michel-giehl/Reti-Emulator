@@ -4,7 +4,12 @@ ADD . /flask-deploy
 
 WORKDIR /flask-deploy
 
-RUN pip3 install gunicorn[gevent]
+#RUN git clone https://github.com/matthejue/PicoC-Compiler /opt/picoc/
+#RUN pip3 install -r /opt/picoc/requirements.txt
+#RUN ln -sr /opt/picoc/src/main.py /usr/local/bin/picoc_compiler && echo "compiler /usr/local/bin/picoc_compiler was successfully installed" || echo "compiler /usr/local/bin/picoc_compiler is already installed"
+RUN git clone https://github.com/michel-giehl/PicoC-Compiler /opt/picoc/
+RUN make -C /opt/picoc/ setup_pyinstaller_linux
+RUN make -C /opt/picoc/ install
 
 RUN pip3 install -r requirements.txt
 

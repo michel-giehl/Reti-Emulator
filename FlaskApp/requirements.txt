@@ -1,6 +1,7 @@
 Flask[async]
+gunicorn[gevent]
 flask-limiter
 flask-restful
 asyncio
 tabulate
-prometheus-flask-exporter
+bitstring

@@ -12,6 +12,48 @@ Executes ReTi code and displays it.
 * [PicoC-Compiler](https://github.com/matthejue/PicoC-Compiler)
 * [ReTi Simulator](http://reti.agrafix.net) (ReTi Code highlighting)
 
+## 🚀 Quick Start
+
+### Linux
+
+Installing Pico-C Compiler
+```sh
+git clone https://github.com/michel-giehl/PicoC-Compiler .
+```
+
+```sh
+make -C ./PicoC-Compiler/ setup_pyinstaller_linux
+```
+
+```sh
+make -C ./PicoC-Compiler/ install
+```
+
+Installing Reti Simulator
+```sh
+git clone https://github.com/michel-giehl/Reti-Emulator .
+```
+
+```sh
+cd ./Reti-Emulator/FlaskApp/
+```
+
+```sh
+pip3 install -r requirements.txt
+```
+
+Running Reti Simulator
+
+```sh
+gunicorn --worker-class gevent --workers 2 --bind 0.0.0.0:8000 wsgi:app --max-requests 10000 --timeout 5 --keep-alive 5 --log-level info
+```
+
+Arguments:
+- `--workers` Number of worker processes
+- `--max-requests` The maximum number of requests a worker will process
+- `--timeout` Request timeout
+
+
 ## Instruction set
 - [x] `LOAD D i`
 - [x] `LOADI D i`
