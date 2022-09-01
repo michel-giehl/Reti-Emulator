@@ -12,8 +12,9 @@
         <link rel="stylesheet" href="codemirror/theme/material-darker.css">
         <script src="codemirror/lib/codemirror.js"></script>
         <script src="codemirror/mode/reti.js"></script>
-        <script src="codemirror/mode/clike.js"></script>
         <script src="codemirror/addon/lint.js"></script>
+        <script src="codemirror/mode/clike.js"></script>
+        <script src="codemirror/mode/javascript.js"></script>
         <script src="jquery.min.js"></script>
         <script src="https://unpkg.com/konva@8.3.5/konva.min.js"></script>
         <!---->
@@ -82,8 +83,8 @@
             </div>
         </div>
         <!-- ReTi/PicoC Navbar -->
-        <ul id="code-window-selector">
-            <li class="navbar-item" id="navbar-select-reti">ReTi</li>
+        <ul id="navbar">
+            <li class="navbar-item navbar-item-active" id="navbar-select-reti">ReTi</li>
             <li class="navbar-item" id="navbar-select-picoc">Pico C</li>
             <li class="navbar-item" id="navbar-select-uart">UART</li>
         </ul>

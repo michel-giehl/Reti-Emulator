@@ -42,7 +42,7 @@ class ReTi {
                 3: this.eprom
             }
             this.bds = 0
-            this.#loadConstants()
+            // this.#loadConstants()
         }
     }
 

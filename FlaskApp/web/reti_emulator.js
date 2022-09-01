@@ -223,10 +223,19 @@ class ReTi {
         return num - Math.pow(2, 21)
     }
 
-
     #toUnSigned(num) {
         return num + Math.pow(2, 21)
     }
 }
 
-export { ReTi, PC, IN1, IN2, ACC, SP, BAF, CS, DS, I, SRAM_SIZE, EPROM_SIZE };
+var ctx = null;
+function makeUartContext(code) {
+    eval(code);
+    return function (str) { eval(str); }
+}
+
+function uartLoop(code) {
+    ctx(code)
+}
+
+export { ReTi, PC, IN1, IN2, ACC, SP, BAF, CS, DS, I, SRAM_SIZE, EPROM_SIZE, makeUartContext, uartLoop};

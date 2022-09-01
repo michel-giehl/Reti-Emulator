@@ -13,6 +13,8 @@ const config = {
   editor: null,
   retiCode: null,
   picoCCode: null,
+  uartCode: null,
+  uartSimulation: null,
   showAnimation: true,
   undoAmount: 20,
   canvasScale: 0.6,
@@ -46,6 +48,12 @@ config.picoCCode = "void main() {" +
 "\n            y = z;" +
 "\n        };" +
 "\n    }" +
+"\n}"
+
+config.uartCode = "// Declarations" +
+"\n\n// Loop" +
+"\n\nconst loop = () => {" +
+"\n    // Code goes here" +
 "\n}"
 
 $(function() {

@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
 	import { writable } from 'svelte/store';
+	import { fade, fly } from 'svelte/transition';
 
 	export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 
@@ -28,7 +29,7 @@
 				u.show = false;
 				return u;
 			});
-		}, 1500);
+		}, 2000);
 	}
 </script>
 
@@ -40,15 +41,23 @@
 			'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
 		error: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
 	};
-</script>
 
-<!-- just here so the classes dont get thrown out -->
-<span class="hidden alert-info alert-success alert-warning alert-error" />
+	const alertType = {
+		info: 'alert-info',
+		success: 'alert-success',
+		error: 'alert-error',
+		warning: 'alert-warning'
+	};
+</script>
 
 {#if $notification.show}
 	<div class="z-40 fixed w-full h-auto overflow-auto">
 		<div
-			class="alert alert-{$notification.type.toString()} shadow-lg w-1/4 z-40 fixed left-0 right-2 top-5 ml-auto"
+			class="alert {alertType[
+				$notification.type
+			]} shadow-lg w-1/4 z-40 fixed left-0 right-2 top-5 ml-auto"
+			in:fade={{ duration: 100 }}
+			out:fly={{ y: 20, duration: 800 }}
 		>
 			<div>
 				{#if $notification.icon}

@@ -1550,7 +1550,6 @@ function draw(reti) {
 
     // clear all layers from stage
     stage.clear()
-    stage.getLayers().forEach(l => l?.destroy())
     layer?.destroy()
     // create new layer
 

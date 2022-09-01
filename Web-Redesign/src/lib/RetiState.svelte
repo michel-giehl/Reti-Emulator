@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { registerNames, reti } from '$lib/reti/global_vars';
+	import { registerNames, reti, isFetching, phase } from '$lib/reti/global_vars';
 	import { stringifyNumber } from './NumberUtils';
 	import { decompile } from './reti/reti_decompiler';
 </script>
 
 <div class="h-full w-full flex flex-col">
-	<div class="w-auto h-auto">
-		<p class="text theme-transition" id="instruction-counter">Instruction {$reti.registers[0]}</p>
-		<p class="text theme-transition" id="instruction-display">LOADI PC {decompile($reti.registers[8])}</p>
+	<div class="w-auto h-auto whitespace-nowrap">
+		<p class="text" id="instruction-counter">Instruction {$reti.registers[0]} | {$isFetching
+			? 'FETCH P'
+			: 'EXECUTE P'}{$isFetching ? ($phase === 0 ? $phase : $phase + 1) : $phase}</p>
+		<p class="text" id="instruction-display">{decompile($reti.registers[8])}</p>
 	</div>
 	<div class="relative flex w-auto h-auto p-1">
 		<div class="flex flex-col w-full lg:flex-row">

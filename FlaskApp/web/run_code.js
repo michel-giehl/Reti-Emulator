@@ -1,5 +1,5 @@
 import { config, registerNames } from "./global_vars.js"
-import { ReTi, PC, I } from "./reti_emulator.js"
+import { ReTi, PC, I} from "./reti_emulator.js"
 import { decompile } from "./reti_decompiler.js"
 import { animateCOMPUTE, animateCOMPUTEI, animateCOMPUTERegisterOnly, animateFetch, animateLOAD, animateLOADI, animateLOADIN, animateMOVE, animateSTORE, animateSTOREIN, draw } from "./canvas.js"
 
@@ -89,6 +89,7 @@ function nextReTiState() {
     } else if (!config.fetch && config.phase == 4) {
         config.fetch = true
         config.phase = 0
+        // config.uartSimulation.loop()
     }
     draw(config.reti)
     doAnimate()
@@ -105,6 +106,7 @@ function run_code(code) {
     config.running = true
     config.reti = new ReTi()
     config.reti.readProgram(code)
+    // config.uartSimulation = new UARTSimulation(config.reti.uart, config.uartCode)
     config.fetch = true
     config.phase = 0
     config.reti.fetch()

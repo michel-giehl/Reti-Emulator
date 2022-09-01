@@ -46,6 +46,10 @@ function statusText(text) {
 
 async function compileAndRun(language = config.mode, startTime = Date.now()) {
     statusText(`Compiling...`)
+    if (language === "uart") {
+        statusText('You must select ReTi or Pico C code to run!')
+        return
+    }
     let code = config.mode === language ? config.editor.getValue() : (language === "picoc" ? config.picoCCode : config.retiCode)
     let response = await compile(code, language)
     if (response.error || response.warnings_and_errors) {
@@ -63,20 +67,41 @@ async function compileAndRun(language = config.mode, startTime = Date.now()) {
     statusText(`Compilation successful (finished after ${Date.now() - startTime}ms)`)
 }
 
-function switchToReTiCodeWindow() {
-    config.picoCCode = config.editor.getValue()
-    config.mode = "reti"
-    config.editor.setOption("mode", "reti")
-    config.editor.setValue(config.retiCode)
-    $('#navbar-select-picoc').prop("disabled", false)
-}
-
-function switchToPicoCCodeWindow() {
-    config.retiCode = config.editor.getValue()
-    config.mode = "picoc"
-    $('#navbar-select-reti').prop("disabled", false)
-    config.editor.setOption("mode", "text/x-csrc")
-    config.editor.setValue(config.picoCCode)
+function handleNavBar(element) {
+    const active = $('.navbar-item-active')
+    if ($(active)[0].id === $(element)[0].id)
+        return
+    $(active).removeClass('navbar-item-active')
+    $(element).addClass('navbar-item-active')
+    const currentMode = config.mode
+    const newMode = $(element)[0].id.split('-')[2]
+    config.mode = newMode
+    const code = config.editor.getValue()
+    switch (currentMode) {
+        case 'reti':
+            config.retiCode = code
+            break
+        case 'picoc':
+            config.picoCCode = code
+            break
+        case 'uart':
+            config.uartCode = code
+            break
+    }
+    switch (newMode) {
+        case 'reti':
+            config.editor.setOption('mode', 'reti')
+            config.editor.setValue(config.retiCode)
+            break
+        case 'picoc':
+            config.editor.setOption('mode', 'text/x-csrc')
+            config.editor.setValue(config.picoCCode)
+            break
+        case 'uart':
+            config.editor.setOption('mode', 'javascript')
+            config.editor.setValue(config.uartCode)
+            break
+    }
 }
 
 $(function() {
@@ -107,13 +132,7 @@ $(function() {
 
     // Code Selector
     $('.navbar-item').click(function() {
-        $(this).prop("disabled", true)
-        let buttonText = $(this).text()
-        if (buttonText === "ReTi") {
-            switchToReTiCodeWindow()
-        } else {
-            switchToPicoCCodeWindow()
-        }
+      handleNavBar($(this))
     })
 
 
@@ -148,7 +167,6 @@ $(function() {
 
     $('#run').click(async function() {
         compileAndRun()
-        await fetch('/sentry/run', {method: 'POST', headers: {'Type': 'Advanced ReTI'}})
     })
 
     $('#yes').change(function() {

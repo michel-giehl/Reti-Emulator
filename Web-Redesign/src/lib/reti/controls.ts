@@ -1,4 +1,4 @@
-import { statusText } from '../components/Alert.svelte';
+import { statusText } from '$lib/components/Alert.svelte';
 import * as config from '$lib/reti/global_vars';
 import { I, ReTi } from './reti_emulator';
 import { animateCOMPUTE, animateCOMPUTEI, animateCOMPUTERegisterOnly, animateFetch, animateLOAD, animateLOADI, animateLOADIN, animateMOVE, animateSTORE, animateSTOREIN, draw } from './canvas';

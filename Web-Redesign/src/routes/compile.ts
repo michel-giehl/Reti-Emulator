@@ -8,97 +8,97 @@ import { CompilationError, compile } from "$lib/reti/reti_compiler";
 const exec = util.promisify(execOld);
 
 const randString = (length: number): string => {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let result = [];
-    for (let i = 0; i < length; i++) {
-        result.push(chars[Math.floor(Math.random() * chars.length)]);
-    }
-    return result.join("");
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let result = [];
+  for (let i = 0; i < length; i++) {
+    result.push(chars[Math.floor(Math.random() * chars.length)]);
+  }
+  return result.join("");
 }
 
 const deleteTempFiles = async (filename: string) => {
-    try {
-        await fs.rm(`${filename}.picoc`);
-        await fs.rm(`${filename}.error`);
-        await fs.rm(`${filename}.out`);
-    } catch (e: any) {
-        if (e.code !== 'ENOENT') throw e;
-    }
+  try {
+    await fs.rm(`${filename}.picoc`);
+    await fs.rm(`${filename}.error`);
+    await fs.rm(`${filename}.out`);
+  } catch (e: any) {
+    if (e.code !== 'ENOENT') throw e;
+  }
 }
 
 const readErrors = async (filename: string) => {
-    try {
-        await fs.access(`${filename}.error`)
-        await fs.access(`${filename}.out`)
-        // can access files => error
-        const errorMessage = await fs.readFile(`${filename}.error`);
-        const errorType = await fs.readFile(`${filename}.out`)
-        return {
-            error: true,
-            type: errorType.toString(),
-            message: errorMessage.toString(),
-        };
-    } catch {
-        return {
-            error: false
-        }
+  try {
+    await fs.access(`${filename}.error`)
+    await fs.access(`${filename}.out`)
+    // can access files => error
+    const errorMessage = await fs.readFile(`${filename}.error`);
+    const errorType = await fs.readFile(`${filename}.out`)
+    return {
+      error: true,
+      type: errorType.toString(),
+      message: errorMessage.toString(),
+    };
+  } catch {
+    return {
+      error: false
     }
+  }
 }
 
 const parseCompiledCode = (code: string): string => {
-    const lines = code.split("\n")
-    lines.shift()
-    lines.pop()
-    lines.pop()
-    for (let i = 0; i < lines.length; i++) {
-        lines[i] = lines[i].replace(";", "")
-    }
-    return lines.join("\n")
+  const lines = code.split("\n")
+  lines.shift()
+  lines.pop()
+  lines.pop()
+  for (let i = 0; i < lines.length; i++) {
+    lines[i] = lines[i].replace(";", "")
+  }
+  return lines.join("\n")
 }
 
 const compilePicoC = async (code: string): Promise<object> => {
-    const filename = `/tmp/${randString(8)}`;
-    await fs.writeFile(`${filename}.picoc`, code);
-    const stdout = await exec(`picoc_compiler -p ${filename}.picoc`);
-    const errors = await readErrors(filename)
-    if (errors.error) {
-        await deleteTempFiles(filename)
-        return errors;
-    }
-    return {
-        error: false,
-        compiledCode: parseCompiledCode(stdout.stdout)
-    }
+  const filename = `/tmp/${randString(8)}`;
+  await fs.writeFile(`${filename}.picoc`, code);
+  const stdout = await exec(`picoc_compiler -p ${filename}.picoc`);
+  const errors = await readErrors(filename)
+  if (errors.error) {
+    await deleteTempFiles(filename)
+    return errors;
+  }
+  return {
+    error: false,
+    compiledCode: parseCompiledCode(stdout.stdout)
+  }
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function post(event: RequestEvent) {
-    const code = await event.request.text()
-    const headers = event.request.headers;
-    const language = headers.get("Language");
-    // const result = await compilePicoC(code);
-    if (language === "reti") {
-        try {
-            const result = compile(code.split("\n"))
-            return {
-                status: 200,
-                body: result,
-            }
-        } catch (e) {
-            if (e instanceof CompilationError) {
-                return {
-                    status: 403,
-                    body: e.message
-                }
-            }
-        }
-    }
-
-    if (language === "picoc") {
-        const compiledCode = await compilePicoC(code)        
+  const code = await event.request.text()
+  const headers = event.request.headers;
+  const language = headers.get("Language");
+  // const result = await compilePicoC(code);
+  if (language === "reti") {
+    try {
+      const result = compile(code.split("\n"))
+      return {
+        status: 200,
+        body: result,
+      }
+    } catch (e) {
+      if (e instanceof CompilationError) {
         return {
-            status: 200,
-            body: compiledCode
+          status: 418,
+          body: e.message
         }
+      }
     }
+  }
+
+  if (language === "picoc") {
+    const compiledCode = await compilePicoC(code)
+    return {
+      status: 200,
+      body: compiledCode
+    }
+  }
 }

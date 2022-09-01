@@ -12,14 +12,12 @@ import asyncio
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask import Flask, send_from_directory, request, jsonify
-from prometheus_flask_exporter import PrometheusMetrics
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config')
     api.init_app(app)
-    metrics = PrometheusMetrics(app, path='/metrics')
     # Rate Limiter
     limiter = Limiter(app, key_func=get_remote_address)
 
@@ -32,18 +30,11 @@ def create_app():
 
     @app.route('/<path:path>')
     @app.route('/')
-    @metrics.do_not_track()
     def send(path = 'index.html'):
         """
         Route static files
         """
         return send_from_directory('web/', path)
-
-    @app.route('/sentry/run', methods=['POST'])
-    @metrics.counter('simulations_run_by_type', 'Number of simulations by type',
-            labels={'type': lambda: request.headers.get('Type')})
-    def sentry_run():
-        return ""
 
     @app.route('/compile', methods=['POST'])
     async def compile():
