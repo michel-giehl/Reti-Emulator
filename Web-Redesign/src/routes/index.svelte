@@ -4,20 +4,26 @@
 	import { onMount } from 'svelte';
 	import { themeChange } from 'theme-change';
 
-	import EditorControlsNavBar from '$lib/navbar/EditorControlsNavbar.svelte';
-	import RetiControlsNavbar from '$lib/navbar/RetiControlsNavbar.svelte';
+	import EditorControlsNavBar from '$lib/components/EditorControlsNavbar.svelte';
+	import RetiControlsNavbar from '$lib/components/RetiControlsNavbar.svelte';
 
 	import RetiAnimation from '$lib/RetiAnimation.svelte';
+
+	import { runReti, save } from '$lib/reti/controls';
+	import Alert from '$lib/components/Alert.svelte';
+	import { showAnimation } from '$lib/reti/global_vars';
+	import RetiState from '$lib/RetiState.svelte';
+	import LoadingScreen from '$lib/LoadingScreen.svelte';
 
 	onMount(() => {
 		themeChange(false);
 	});
 
 	// Navbar stuff
-	let clockspeedOptions = [0.1, 0.2, 0.3, 0.5]
-	clockspeedOptions.push(...[...Array(5).keys()].map(i => i + 1));
+	let clockspeedOptions = [0.1, 0.2, 0.3, 0.5];
+	clockspeedOptions.push(...[...Array(5).keys()].map((i) => i + 1));
 
-	let numberStyles = ['Binary', 'Binary (short)', 'Decimal', 'Hexadecimal'];
+	let numberStyles = ['Binary', 'Decimal', 'Hexadecimal'];
 
 	let themes = [
 		'solarized',
@@ -33,20 +39,51 @@
 	let size = '32';
 </script>
 
-<div class="h-screen w-screen">
-	<div class="w-full h-20" />
+<Alert />
+
+<div class="h-screen w-screen overflow-x-hidden flex flex-col">
+	<div class="flex-initial h-6" />
 	<div class="flex flex-row w-screen">
-		<EditorControlsNavBar {size} {themes} />
+		<EditorControlsNavBar
+			{size}
+			on:run={async () => {
+				await runReti();
+			}}
+			on:save={() => {
+				save();
+			}}
+		/>
 		<div class="divider divider-horizontal" />
-		<RetiControlsNavbar {clockspeedOptions} {numberStyles}/>
+		<RetiControlsNavbar {clockspeedOptions} {numberStyles} />
 	</div>
 
-	<div id="main-container" class="flex flex-row w-screen h-5/6">
+	<div id="main-container" class="flex flex-1 w-screen">
 		<CodeMirror />
 		<DragBar leftContainer="left" rightContainer="state-window" />
-		<div id="state-window" class="w-1/2 h-full overflow-y-hidden overflow-x-scroll">
-			<!--<RetiState /> -->
-			<RetiAnimation />
+		<div
+			id="state-window"
+			class="w-1/2 overflow-scroll"
+			on:mousewheel={(e) => {
+				const stateWindow = document.getElementById('state-window');
+				if (stateWindow === null) return;
+				stateWindow.scrollLeft += e.deltaY;
+			}}
+		>
+			{#if $showAnimation}
+				<RetiAnimation />
+			{:else}
+				<RetiState />
+			{/if}
 		</div>
 	</div>
 </div>
+
+<style>
+	@tailwind components;
+	.divider:after {
+		@apply bg-black;
+	}
+	.divider:before {
+		@apply bg-black;;
+	}
+</style>

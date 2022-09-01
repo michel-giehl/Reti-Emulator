@@ -16,33 +16,6 @@
 
 @layer components {
 
-    .navbar-icon {
-        @apply relative flex items-center justify-center
-        h-10 w-10 mt-auto mb-auto mx-1.5 
-        dark:bg-slate-800 dark:text-sky-500 dark:hover:bg-sky-500
-        bg-white  text-slate-900 hover:bg-slate-900 
-        hover:text-white dark:hover:text-slate-200
-        shadow-md shadow-black
-        rounded-3xl hover:rounded-lg
-        transition-all duration-300 ease-in-out
-        cursor-pointer;
-    }
-
-    .navbar-dropdown {
-        @apply relative flex items-center justify-start
-               pl-1.5 h-10 w-auto mt-2 mb-2 mx-1.5 shadow-md shadow-black
-               dark:bg-slate-800 dark:text-sky-500 dark:hover:bg-sky-500
-               bg-white  text-slate-900 hover:bg-slate-900 
-               hover:text-white dark:hover:text-slate-200
-               rounded-2xl hover:rounded-lg
-               transition-all duration-100 ease-linear
-               cursor-pointer;
-    }
-
-    .navbar-tooltip {
-        @apply absolute w-auto p-2 m-1 min-w-max z-10 rounded-md shadow-sm shadow-black text-white bg-slate-800 text-xs font-bold hidden transition-all duration-100 origin-bottom -translate-y-12;
-    }
-
     .register {
         @apply dark:bg-slate-800 border-b-2 bg-neutral h-16 w-1/4 mx-2 rounded-none border-black overflow-hidden theme-transition;
     }

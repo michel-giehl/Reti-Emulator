@@ -1,4 +1,4 @@
-import { registerNames } from "./global_vars.js"
+import { registerNames } from "./global_vars"
 
 function toSigned(num) {
     return num - Math.pow(2, 21)
@@ -96,6 +96,7 @@ function decompile (instruction) {
         case 3:
             return decompileJump(instruction)
     }
+    return ""
 }
 
 export { decompile };

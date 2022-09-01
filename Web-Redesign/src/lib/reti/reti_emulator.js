@@ -1,5 +1,3 @@
-import { config } from "./global_vars.js"
-
 const SRAM_SIZE = (1 << 16)
 const EPROM_SIZE = (1 << 16)
 const PC = 0
@@ -35,7 +33,7 @@ class ReTi {
 
             this.uart = new Array(8).fill(0)
 
-            this.sram = new Array(SRAM_SIZE)
+            this.sram = new Array()
             this.eprom = new Array(EPROM_SIZE)
             this.memoryMap = {
                 0: this.eprom,
@@ -96,6 +94,22 @@ class ReTi {
                 break
         }
     }
+
+  simulateUART(mode, data) {
+    // UART writes data into R1 so the reti can read it.
+    if (mode === "send") {
+      if (data.length === 0) return
+      // check if R2 b1 == 0
+      console.log((this.uart[2] & 2) == 0)
+      if ((this.uart[2] & 2) == 0) {
+        this.uart[2] |= 2
+        this.uart[1] = data[0] & 0xff
+        data.shift()
+      }
+    } else if (mode === "receive") {
+      // TODO implement
+    }
+  }
 
     #load(instruction) {
         let mode = (instruction >>> 28) & 0x3
@@ -212,8 +226,8 @@ class ReTi {
     }
 
     #loadConstants() {
-        this.eprom[Math.pow(2,16) - 1] = 1 << 30
-        this.eprom[Math.pow(2,16) - 2] = (1 << 31) >>> 0
+        this.eprom[Math.pow(2,16) - 1] = 1 << 30 // UART
+        this.eprom[Math.pow(2,16) - 2] = (1 << 31) >>> 0 // SRAM
         this.eprom[Math.pow(2,16) - 3] = 0x70000000 // LOADI PC 0
         this.registers[DS] = (1 << 31) >>> 0
         this.registers[SP] = SRAM_SIZE - 1

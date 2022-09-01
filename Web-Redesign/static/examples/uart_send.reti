@@ -1,0 +1,19 @@
+; Example: UART Send
+; Description: ReTi reads data from the uart and stores it in the SRAM.
+LOADI IN1 50
+LOADI DS 0			; access EPROM
+LOAD DS 65535		; access SRAM
+
+LOAD ACC 2			; UART R2 in ACC
+ANDI ACC 2			; ACC & 2 to only get b1 bit.
+JUMP== -3			; jump back if b1 is not set.
+; Data is ready to be received.
+LOAD ACC 1			; Load data from R1 into ACC
+LOADI IN2 0
+STORE IN2 2			; Store 0 in R2 of UART so it can send next byte
+
+LOADI DS 0			; access EPROM
+LOAD DS 65534		; access SRAM
+STOREIN IN1 ACC 0	; save received data in SRAM
+ADDI IN1 1			; increment counter
+JUMP -12

@@ -1,0 +1,19 @@
+LOADI ACC 5			; n = 5, Erwartetes Ergebnis: M(33) = 7
+STORE ACC 30		; n an Stelle 30 Speichern
+LOADI ACC 0
+STORE ACC 32
+STORE ACC 33
+
+LOAD ACC 30         ; Counter-Variable in ACC laden
+SUBI ACC 1          ; Counter runterzählen
+STORE ACC 30        ; Counter-Variable wieder speichern
+JUMP<= 9            ; Springe zum Ende, wenn counter 0 ist.
+    LOAD ACC 33     ; s(n) in ACC
+    MOVE ACC IN1    ; s(n) in IN1 kopieren
+    ADD ACC 32      ; ACC + s(n - 1)
+    ADDI ACC 1      ; ACC + 1 |$\Rightarrow$| s(n + 1) jetzt in ACC
+    STORE ACC 33    ; s(n + 1) in M(33) speichern
+    MOVE IN1 ACC    ; s(n) zurück in ACC
+    STORE ACC 32    ; s(n) in M(32) speichern
+JUMP -11            ; Zurück an zum Anfang des Loops
+JUMP 0 ; Ende

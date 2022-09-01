@@ -1,7 +1,6 @@
-import { config, registerNames } from "$lib/global_vars.js"
-import { stringifyNumber } from "$lib/run_code.js"
-import { decompile } from "$lib/reti_decompiler.js"
-import { convertToUpperNumber } from "$lib/run_code.js"
+import { registerNames, numberStyle, showAnimation, canvasScale, strokeColor } from "$lib/reti/global_vars"
+import { decompile } from "$lib/reti/reti_decompiler.js"
+import { convertToUpperNumber, stringifyNumber } from "$lib/NumberUtils"
 import Konva from "konva"
 
 let stage = null
@@ -14,6 +13,19 @@ const colorPalette = {
     fourth: "#ffa700", // orange
     fifth: "#008744", // green
 }
+
+let $numberStyle;
+let $showAnimation;
+let $canvasScale;
+
+numberStyle.subscribe(v => $numberStyle = v);
+showAnimation.subscribe(v => $showAnimation = v);
+canvasScale.subscribe(v => $canvasScale = v);
+strokeColor.subscribe(v => {
+    colorPalette.stroke = v;
+});
+
+
 
 const registerDriverNames = ["0Ld", "PCLd", "IN1Ld", "IN2Ld", "ACCLd", "SPLd", "BAFLd", "CSLd", "DSLd", "0Rd", "IRd", "DRd"]
 const registerToDataPathDriverNames = ["PCDd", "IN1Dd", "IN2Dd", "ACCDd", "SPDd", "BAFDd", "CSDd", "DSDd"]
@@ -756,7 +768,7 @@ function drawSRAM(x, y, reti, ram, name, driverNames) {
             if (data !== undefined) {
                 addressText.push(i + "")
                 if (ram === reti.sram) {
-                    dataText.push(`${i < reti.bds && config.numberStyle !== 2 ? decompile(Number.parseInt(data)) : stringifyNumber(data)}`)
+                    dataText.push(`${i < reti.bds && $numberStyle !== 2 ? decompile(Number.parseInt(data)) : stringifyNumber(data)}`)
                 } else {
                     dataText.push(stringifyNumber(data))
                 }
@@ -1512,7 +1524,7 @@ function animateCOMPUTERegisterOnly(mode, source, dest, phase) {
 }
 
 function animate(active) {
-    if (!config.showAnimation) {
+    if (!$showAnimation) {
         return
     }
     for (let element of active) {
@@ -1545,7 +1557,7 @@ function setup() {
 }
 
 function draw(reti) {
-    if (!config.showAnimation) {
+    if (!$showAnimation) {
         return
     }
 
@@ -1556,8 +1568,8 @@ function draw(reti) {
     // create new layer
 
     layer = new Konva.Layer({
-        scaleX: config.canvasScale,
-        scaleY: config.canvasScale,
+        scaleX: $canvasScale,
+        scaleY: $canvasScale,
     });
 
     // layer.listening(false)

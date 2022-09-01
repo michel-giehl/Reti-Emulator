@@ -49,4 +49,11 @@
 </div>
 
 <style>
+	@tailwind components;
+	.divider:after {
+		@apply bg-black;
+	}
+	.divider:before {
+		@apply bg-black;;
+	}
 </style>

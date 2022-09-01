@@ -1,0 +1,11 @@
+LOADI SP 100      ; use SP as counter
+LOADI IN1 0       ; IN1 = 0
+LOADI IN2 1       ; IN2 = 1
+LOADI ACC 0       ; ACC = 0
+MOVE IN1 ACC      ; ACC = IN1 + IN2
+ADD ACC IN2       ; ACC = IN1 + IN2
+MOVE IN2 IN1      ; IN1 = IN2
+MOVE ACC IN2      ; IN2 = ACC
+STOREIN SP IN1 0  ; store in SRAM
+ADDI SP 1         ; increment counter
+JUMP -6           ; loop forever
