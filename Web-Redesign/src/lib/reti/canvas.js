@@ -1583,7 +1583,7 @@ function draw(reti) {
     drawRegisterPathToDataPath(
         beginX + 115,
         beginY + 350,
-        beginX + 1370 - 32,
+        beginX + 1300 - 32,
         beginY,
         registerToDataPathDriverNames[0],
         "pc"
@@ -1597,7 +1597,7 @@ function draw(reti) {
         drawRegisterPathToDataPath(
             x,
             (beginY + 380) - (i * 30),
-            beginX + 1370 - i * 32,
+            beginX + 1300 - i * 32,
             beginY,
             registerToDataPathDriverNames[i - 1],
             registerNames[i - 1]

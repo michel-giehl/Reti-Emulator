@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { registerNames, reti, isFetching, phase } from '$lib/reti/global_vars';
+	import { registerNames, reti, isFetching, phase, numberStyle } from '$lib/reti/global_vars';
 	import { stringifyNumber } from './NumberUtils';
 	import { decompile } from './reti/reti_decompiler';
 </script>
@@ -16,7 +16,7 @@
 			{#each $reti.registers as register, idx}
 				<div class="grid flex-grow h-16 w-32 card bg-base-300 rounded-box place-items-center mr-2">
 					<p class="register-text text-lg ml-4 mr-4">{registerNames[idx]}</p>
-					<p class="register-text text-sm ml-4 mr-4">{stringifyNumber(register, 10)}</p>
+					<p class="register-text text-sm ml-4 mr-4">{stringifyNumber(register, $numberStyle)}</p>
 				</div>
 			{/each}
 		</div>
@@ -43,7 +43,7 @@
 							{#if data !== undefined}
 								<tr class={$reti.registers[0] === addr ? 'active text-info' : ''}>
 									<td class="text-left">{addr}</td>
-									<td class="text-left">{addr < $reti.bds ? decompile(data) : data}</td>
+									<td class="text-left">{addr < $reti.bds ? decompile(data) : stringifyNumber(data, $numberStyle)}</td>
 								</tr>
 							{/if}
 						{/each}

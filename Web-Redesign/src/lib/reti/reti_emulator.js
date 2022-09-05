@@ -42,7 +42,7 @@ class ReTi {
                 3: this.eprom
             }
             this.bds = 0
-            // this.#loadConstants()
+            this.#loadConstants()
         }
     }
 
@@ -98,17 +98,18 @@ class ReTi {
   simulateUART(mode, data) {
     // UART writes data into R1 so the reti can read it.
     if (mode === "send") {
-      if (data.length === 0) return
+      if (data.length === 0) return false
       // check if R2 b1 == 0
-      console.log((this.uart[2] & 2) == 0)
       if ((this.uart[2] & 2) == 0) {
         this.uart[2] |= 2
         this.uart[1] = data[0] & 0xff
         data.shift()
+        return true
       }
     } else if (mode === "receive") {
       // TODO implement
     }
+    return false
   }
 
     #load(instruction) {

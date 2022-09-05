@@ -3,14 +3,24 @@
 	import Play from 'svelte-material-icons/Play.svelte';
 	import Rewind from 'svelte-material-icons/Rewind.svelte';
 	import FastForward from 'svelte-material-icons/FastForward.svelte';
-	import { select_value, validate_component } from 'svelte/internal';
-	import { clockSpeed, showAnimation, paused } from '$lib/reti/global_vars';
+	import { clockSpeed, showAnimation, paused, numberStyle } from '$lib/reti/global_vars';
 	import { nextReTiState, previousReTiState } from '$lib/reti/controls';
 
 	export let clockspeedOptions: Array<number>;
 	export let numberStyles: Array<string>;
 
 	let speed: number = 1;
+
+	const onSubmit = (e: any) => {
+		const val = e?.target?.attributes?.value?.value ?? "decimal"
+		const mapping: { [key: string]: number } = {
+			binary: 2,
+			decimal: 10,
+			hexadecimal: 16
+		};
+		$numberStyle = mapping[val.toLowerCase()];
+		console.log($numberStyle)
+	};
 </script>
 
 <div class="navbar bg-base-100">
@@ -78,7 +88,7 @@
 			class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
 		>
 			<!-- svelte-ignore a11y-missing-attribute -->
-			<li><a>KEKW</a></li>
+			<li><a>1</a></li>
 			{#each clockspeedOptions as opt}
 				<!-- svelte-ignore a11y-missing-attribute -->
 				<li><a on:click={() => ($clockSpeed = opt)}>{opt} Hz</a></li>
@@ -102,7 +112,9 @@
 		>
 			{#each numberStyles as style}
 				<!-- svelte-ignore a11y-missing-attribute -->
-				<li><a>{style}</a></li>
+				<li>
+					<a value={style} on:click={onSubmit}>{style}</a>
+				</li>
 			{/each}
 		</ul>
 	</div>

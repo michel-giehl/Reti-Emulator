@@ -122,7 +122,12 @@ export const nextReTiState = () => {
     config.phase.set(0)
   } else if (!$fetch && $phase == 4) {
     config.isFetching.set(true)
-    $reti.simulateUART($uartData.mode, $uartData.data)
+    if ($reti.simulateUART($uartData.mode, $uartData.data)) {
+      console.log(`LOL ${$uartData.data}`)
+      config.uartData.update((u) => {
+        return u
+      })
+    }
     config.phase.set(0)
   }
   draw($reti)

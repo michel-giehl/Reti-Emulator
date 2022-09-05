@@ -48,6 +48,7 @@
 
 	let activeTheme: string = 'light';
 	let mode: string = 'reti';
+	$: data = $uartData.data;
 </script>
 
 <div class="navbar bg-base-100">
@@ -135,8 +136,12 @@
 				</div>
 				<div class="form-control">
 					<label class="input-group">
-						<span>Bytes</span>
-						<input name="data" type="text" placeholder="0,255,4" class="input input-bordered" />
+						<select class="select select-bordered bg-base-300">
+							<option selected>Bytes</option>
+							<option>String</option>
+							<option>ReTi</option>
+						  </select>
+						<input name="data" type="text" placeholder="0,1,2,3,4" class="input input-bordered" value={data}>
 					</label>
 				</div>
 				<div class="modal-action">
