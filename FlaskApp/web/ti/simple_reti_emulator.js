@@ -234,7 +234,8 @@ class ReTi {
         let computeImmidiate = instruction.at(-1) == "I"
         let i = Number.parseInt(args[1])
         i = computeImmidiate ? i : this.memRead(i)
-        let result = this.registers[registerMapping[args[0]]]
+        let registerIndex = registerMapping[args[0]]
+        let result = this.registers[registerIndex]
         if (instruction.startsWith("ADD")) {
             result += i
         } else if (instruction.startsWith("SUB")) {
@@ -246,7 +247,7 @@ class ReTi {
         } else if(instruction.startsWith("AND")) {
             result &= i
         }
-        this.registers[ACC] = this.#to32Bit(result)
+        this.registers[registerIndex] = this.#to32Bit(result)
         this.registers[PC]++
     }
 }
