@@ -1,15 +1,20 @@
 <script lang="ts">
-	import { registerNames, reti, isFetching, phase, numberStyle } from '$lib/reti/global_vars';
-	import { stringifyNumber } from './NumberUtils';
-	import { decompile } from './reti/reti_decompiler';
+	import { registerNames, reti, isFetching, phase, numberStyle } from '$lib/global_vars';
+	import { stringifyNumber } from '$lib/NumberUtils';
+	import { decompile } from '$lib/reti_decompiler';
+	import { browser } from '$app/environment';
 </script>
 
 <div class="h-full w-full flex flex-col">
 	<div class="w-auto h-auto whitespace-nowrap">
-		<p class="text" id="instruction-counter">Instruction {$reti.registers[0]} | {$isFetching
-			? 'FETCH P'
-			: 'EXECUTE P'}{$isFetching ? ($phase === 0 ? $phase : $phase + 1) : $phase}</p>
-		<p class="text" id="instruction-display">{decompile($reti.registers[8])}</p>
+		<p class="font-mono text-3xl p-2" id="instruction-counter">
+			Instruction {$reti.registers[0]} | {$isFetching ? 'FETCH P' : 'EXECUTE P'}{$isFetching
+				? $phase === 0
+					? $phase
+					: $phase + 1
+				: $phase}
+		</p>
+		<p class="font-mono text-3xl p-2" id="instruction-display">{decompile($reti.registers[8])}</p>
 	</div>
 	<div class="relative flex w-auto h-auto p-1">
 		<div class="flex flex-col w-full lg:flex-row">
@@ -34,16 +39,18 @@
 						</tr>
 					</thead>
 					<colgroup>
-						<col span="1" style="width: 20%;">
-						<col span="1" style="width: 80%;">
-					 </colgroup>
+						<col span="1" style="width: 20%;" />
+						<col span="1" style="width: 80%;" />
+					</colgroup>
 					<tbody>
 						<!-- row 2 -->
 						{#each $reti.sram as data, addr}
 							{#if data !== undefined}
 								<tr class={$reti.registers[0] === addr ? 'active text-info' : ''}>
 									<td class="text-left">{addr}</td>
-									<td class="text-left">{addr < $reti.bds ? decompile(data) : stringifyNumber(data, $numberStyle)}</td>
+									<td class="text-left"
+										>{addr < $reti.bds ? decompile(data) : stringifyNumber(data, $numberStyle)}</td
+									>
 								</tr>
 							{/if}
 						{/each}
@@ -72,7 +79,7 @@
 									{#if data !== undefined}
 										<tr>
 											<td class="text-left">R{addr}</td>
-											<td class="text-left">{data.toString(2).padStart(8, "0")}</td>
+											<td class="text-left">{data.toString(2).padStart(8, '0')}</td>
 										</tr>
 									{/if}
 								{/each}
@@ -89,9 +96,6 @@
 	@tailwind components;
 
 	@layer components {
-		.text {
-			@apply font-mono text-3xl p-2;
-		}
 
 		/* Hide scrollbar for Chrome, Safari and Opera */
 		.hide-scrollbar::-webkit-scrollbar {

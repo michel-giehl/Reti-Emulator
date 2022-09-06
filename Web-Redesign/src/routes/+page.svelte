@@ -9,11 +9,10 @@
 
 	import RetiAnimation from '$lib/RetiAnimation.svelte';
 
-	import { runReti, save } from '$lib/reti/controls';
+	import { runReti, save } from '$lib/controls';
 	import Alert from '$lib/components/Alert.svelte';
-	import { showAnimation } from '$lib/reti/global_vars';
+	import { showAnimation } from '$lib/global_vars';
 	import RetiState from '$lib/RetiState.svelte';
-	import LoadingScreen from '$lib/LoadingScreen.svelte';
 
 	onMount(() => {
 		themeChange(false);

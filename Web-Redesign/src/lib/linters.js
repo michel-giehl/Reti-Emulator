@@ -1,4 +1,4 @@
-import {compile} from "$lib/reti/controls"
+import {compile} from "$lib/controls"
 
 async function retiValidator(text, options) {
     let found = []

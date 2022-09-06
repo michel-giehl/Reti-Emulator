@@ -1,5 +1,5 @@
-import { registerNames, numberStyle, showAnimation, canvasScale, strokeColor } from "$lib/reti/global_vars"
-import { decompile } from "$lib/reti/reti_decompiler.js"
+import { registerNames, numberStyle, showAnimation, canvasScale, strokeColor } from "$lib/global_vars"
+import { decompile } from "$lib/reti_decompiler"
 import { convertToUpperNumber, stringifyNumber } from "$lib/NumberUtils"
 import Konva from "konva"
 
@@ -1547,7 +1547,6 @@ function animate(active) {
 }
 
 function setup() {
-
     let container = document.querySelector('#canvas')
     stage = new Konva.Stage({
         container: 'canvas',
@@ -1652,12 +1651,6 @@ function draw(reti) {
     // add the layer to the stage
     stage.add(layer)
 }
-
-// draw on initial page load
-document.addEventListener('DOMContentLoaded', function () {
-    setup()
-    draw()
-})
 
 export {
     draw,

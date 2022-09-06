@@ -3,8 +3,8 @@
 	import Play from 'svelte-material-icons/Play.svelte';
 	import Rewind from 'svelte-material-icons/Rewind.svelte';
 	import FastForward from 'svelte-material-icons/FastForward.svelte';
-	import { clockSpeed, showAnimation, paused, numberStyle } from '$lib/reti/global_vars';
-	import { nextReTiState, previousReTiState } from '$lib/reti/controls';
+	import { clockSpeed, showAnimation, paused, numberStyle } from '$lib/global_vars';
+	import { nextReTiState, previousReTiState } from '$lib/controls';
 
 	export let clockspeedOptions: Array<number>;
 	export let numberStyles: Array<string>;
@@ -12,14 +12,14 @@
 	let speed: number = 1;
 
 	const onSubmit = (e: any) => {
-		const val = e?.target?.attributes?.value?.value ?? "decimal"
+		const val = e?.target?.attributes?.value?.value ?? 'decimal';
 		const mapping: { [key: string]: number } = {
 			binary: 2,
 			decimal: 10,
 			hexadecimal: 16
 		};
 		$numberStyle = mapping[val.toLowerCase()];
-		console.log($numberStyle)
+		console.log($numberStyle);
 	};
 </script>
 

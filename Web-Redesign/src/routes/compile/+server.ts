@@ -2,8 +2,8 @@ import type { RequestEvent, RequestHandler } from "@sveltejs/kit";
 import util from 'node:util';
 import { exec as execOld } from "child_process";
 import fs from "fs/promises";
-import { randomBytes, randomInt } from "node:crypto";
-import { CompilationError, compile } from "$lib/reti/reti_compiler";
+import { CompilationError, compile } from "$lib/reti_compiler";
+import { json } from '@sveltejs/kit';
 
 const exec = util.promisify(execOld);
 
@@ -72,33 +72,23 @@ const compilePicoC = async (code: string): Promise<object> => {
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export async function post(event: RequestEvent) {
+export async function POST(event: RequestEvent) {
   const code = await event.request.text()
   const headers = event.request.headers;
   const language = headers.get("Language");
-  // const result = await compilePicoC(code);
   if (language === "reti") {
     try {
       const result = compile(code.split("\n"))
-      return {
-        status: 200,
-        body: result,
-      }
+      return json(result)
     } catch (e) {
       if (e instanceof CompilationError) {
-        return {
-          status: 418,
-          body: e.message
-        }
+        return json(e.message)
       }
     }
   }
 
   if (language === "picoc") {
     const compiledCode = await compilePicoC(code)
-    return {
-      status: 200,
-      body: compiledCode
-    }
+    return json(compiledCode)
   }
 }

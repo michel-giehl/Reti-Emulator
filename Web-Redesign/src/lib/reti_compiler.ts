@@ -1,4 +1,3 @@
-import { match } from "assert";
 
 export class CompilationError extends Error {
 

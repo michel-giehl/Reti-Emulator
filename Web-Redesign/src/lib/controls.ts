@@ -1,8 +1,8 @@
 import { statusText } from '$lib/components/Alert.svelte';
-import * as config from '$lib/reti/global_vars';
-import { I, ReTi } from './reti_emulator';
-import { animateCOMPUTE, animateCOMPUTEI, animateCOMPUTERegisterOnly, animateFetch, animateLOAD, animateLOADI, animateLOADIN, animateMOVE, animateSTORE, animateSTOREIN, draw } from './canvas';
-import { decompile } from './reti_decompiler';
+import * as config from "$lib/global_vars"
+import { I, ReTi } from '$lib/reti_emulator';
+import { animateCOMPUTE, animateCOMPUTEI, animateCOMPUTERegisterOnly, animateFetch, animateLOAD, animateLOADI, animateLOADIN, animateMOVE, animateSTORE, animateSTOREIN, draw } from '$lib/canvas';
+import { decompile } from '$lib/reti_decompiler';
 
 let $running: any;
 let $clockSpeed: any;
@@ -203,7 +203,8 @@ export const switchCodeWindow = (newMode: string) => {
     case "reti":
       config.retiCode.set(code)
       break;
-    case "picoc":
+    case "clike":
+      console.log("LOLOLOLOLOLOL")
       config.picoCCode.set(code)
       break;
   }

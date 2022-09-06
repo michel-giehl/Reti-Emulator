@@ -107,7 +107,11 @@ class ReTi {
         return true
       }
     } else if (mode === "receive") {
-      // TODO implement
+      if ((this.uart[2] & 1) === 0) {
+        data.push(this.uart[0])
+        this.uart[0] = 0
+        this.uart[2] |= 1
+      }
     }
     return false
   }
@@ -230,6 +234,7 @@ class ReTi {
         this.eprom[Math.pow(2,16) - 1] = 1 << 30 // UART
         this.eprom[Math.pow(2,16) - 2] = (1 << 31) >>> 0 // SRAM
         this.eprom[Math.pow(2,16) - 3] = 0x70000000 // LOADI PC 0
+        this.uart[2] = 1;
         this.registers[DS] = (1 << 31) >>> 0
         this.registers[SP] = SRAM_SIZE - 1
     }

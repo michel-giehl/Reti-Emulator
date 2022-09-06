@@ -1,8 +1,8 @@
 <script>
-	import { setup, draw } from '$lib/reti/canvas.js';
+	import { setup, draw } from '$lib/canvas.js';
 	import { onMount } from 'svelte';
-	import { reti, phase, isFetching } from '$lib/reti/global_vars';
-	import { decompile } from './reti/reti_decompiler';
+	import { reti, phase, isFetching } from '$lib/global_vars';
+	import { decompile } from '$lib/reti_decompiler';
 
 	onMount(() => {
 		setup();

@@ -1,4 +1,4 @@
-import { registerNames } from "./global_vars"
+import { registerNames } from "$lib/global_vars"
 
 function toSigned(num) {
     return num - Math.pow(2, 21)

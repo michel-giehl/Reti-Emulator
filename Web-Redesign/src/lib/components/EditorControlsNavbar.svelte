@@ -7,16 +7,14 @@
 
 	import { createEventDispatcher } from 'svelte';
 
-	import { draw } from '$lib/reti/canvas.js';
-	import { strokeColor, reti, editorMode, uartData } from '$lib/reti/global_vars';
-	import { loadExample, switchCodeWindow } from '$lib/reti/controls';
-	import { onMount } from 'svelte';
+	import { draw } from '$lib/canvas';
+	import { strokeColor, reti, editorMode, uartData } from '$lib/global_vars';
+	import { loadExample, switchCodeWindow } from '$lib/controls';
 
-
-  editorMode.subscribe(async (em) => {
-		const result = await fetch('/examples', { headers: { Language: em } });
+	editorMode.subscribe(async (em) => {
+		const result = await fetch('/example', { headers: { Language: em } });
 		examples = await result.json();
-  })
+	});
 
 	const dispatch = createEventDispatcher();
 
@@ -140,8 +138,14 @@
 							<option selected>Bytes</option>
 							<option>String</option>
 							<option>ReTi</option>
-						  </select>
-						<input name="data" type="text" placeholder="0,1,2,3,4" class="input input-bordered" value={data}>
+						</select>
+						<input
+							name="data"
+							type="text"
+							placeholder="0,1,2,3,4"
+							class="input input-bordered"
+							value={data}
+						/>
 					</label>
 				</div>
 				<div class="modal-action">
@@ -206,10 +210,13 @@
 
 	<div class="flex-none ml-2">
 		<div class="tooltip" data-tip="💻 Modus">
-			<select class="select select-bordered w-full max-w-xs" on:change={async (e) => {
-        await loadExample(e.target.value + "." + $editorMode)
-      }}>
-        <option disabled selected>Examples</option>
+			<select
+				class="select select-bordered w-full max-w-xs"
+				on:change={async (e) => {
+					await loadExample(e.target.value + '.' + $editorMode);
+				}}
+			>
+				<option disabled selected>Examples</option>
 				{#each examples as example}
 					<option value={example}>{example}</option>
 				{/each}
