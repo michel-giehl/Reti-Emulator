@@ -1,6 +1,5 @@
 // 
 // reti mode for CodeMirror 2 by Alexander Thiemann <mail@agrafix.net>
-// Edited by Michel Giehl to support the advanced ReTi's instruction set
 // Derrived from CodeMirror2-LUA Mode
 //
  

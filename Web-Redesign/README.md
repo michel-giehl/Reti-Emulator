@@ -1,38 +1,57 @@
-# create-svelte
+# ReTi-Simulator
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Executes ReTi code and displays it.
 
-## Creating a project
+## [Live version](https://reti-new.gim.one/)
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Built with
 
-```bash
-# create a new project in the current directory
-npm init svelte
+* [SvelteKit](https://kit.svelte.dev/)
+* [Node JS](https://nodejs.org/)
+* [CodeMirror](https://codemirror.net/) (Code Editor)
+* [PicoC-Compiler](https://github.com/matthejue/PicoC-Compiler)
+* [TailwindCSS](https://tailwindcss.com/)
+* [DaisyUI](https://daisyui.com/)
 
-# create a new project in my-app
-npm init svelte my-app
+## 🚀 Quick Start
+
+### Linux
+
+Requirements:
+* Python >= 3.10
+* NodeJS >= 16.14
+
+Installing Pico-C Compiler:
+
+```sh
+git clone https://github.com/matthejue/PicoC-Compiler .
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```sh
+make -C ./PicoC-Compiler/ setup_pyinstaller_linux
 ```
 
-## Building
+```sh
+make -C ./PicoC-Compiler/ install
+```
 
-To create a production version of your app:
+Installing Reti Simulator:
+```sh
+git clone https://github.com/michel-giehl/Reti-Emulator .
+```
 
-```bash
+```sh
+cd ./Reti-Emulator/Web-Redesign/
+```
+
+```sh
+npm install
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Running Reti Simulator
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```sh
+cd build/
+node index.js
+```
