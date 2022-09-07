@@ -1,6 +1,6 @@
 # Reti-Simulator
 
-Simulator for the "ReTI" computer. Executes ReTI assembler or Pico-C code and shows active and shows active data paths.
+Simulator for the "ReTI" computer. Executes ReTI assembler or Pico-C code and shows active data paths.
 
 # File structure
 
