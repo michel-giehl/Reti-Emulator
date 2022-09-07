@@ -5,7 +5,7 @@ Simulator for the "ReTI" computer. Executes ReTI assembler or Pico-C code and sh
 # File structure
 
 ### web
-new website build with svelte kit and tailwind.
+new website built with svelte kit and tailwind.
 
 [Preview](https://reti-new.gim.one)
 
