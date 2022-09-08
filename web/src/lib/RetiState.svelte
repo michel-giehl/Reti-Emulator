@@ -2,24 +2,23 @@
 	import { registerNames, reti, isFetching, phase, numberStyle } from '$lib/global_vars';
 	import { stringifyNumber } from '$lib/NumberUtils';
 	import { decompile } from '$lib/reti_decompiler';
-	import { browser } from '$app/environment';
 </script>
 
-<div class="h-full w-full flex flex-col">
+<div class="h-full w-full flex flex-col text-sm xl:text-base">
 	<div class="w-auto h-auto whitespace-nowrap">
-		<p class="font-mono text-3xl p-2" id="instruction-counter">
+		<p class="font-mono text-base xl:text-3xl p-1" id="instruction-counter">
 			Instruction {$reti.registers[0]} | {$isFetching ? 'FETCH P' : 'EXECUTE P'}{$isFetching
 				? $phase === 0
 					? $phase
 					: $phase + 1
 				: $phase}
 		</p>
-		<p class="font-mono text-3xl p-2" id="instruction-display">{decompile($reti.registers[8])}</p>
+		<p class="font-mono text-base xl:text-3xl p-1" id="instruction-display">{decompile($reti.registers[8])}</p>
 	</div>
 	<div class="relative flex w-auto h-auto p-1">
-		<div class="flex flex-col w-full lg:flex-row">
+		<div class="flex flex-row flex-wrap w-full">
 			{#each $reti.registers as register, idx}
-				<div class="grid flex-grow h-16 w-32 card bg-base-300 rounded-box place-items-center mr-2">
+				<div class="grid flex-grow h-16 w-fit card bg-base-300 rounded-box place-items-center mr-2 mb-2">
 					<p class="register-text text-lg ml-4 mr-4">{registerNames[idx]}</p>
 					<p class="register-text text-sm ml-4 mr-4">{stringifyNumber(register, $numberStyle)}</p>
 				</div>
@@ -27,20 +26,22 @@
 		</div>
 	</div>
 
-	<div class="flex flex-row w-full h-[600px] p-3 overflow-y-hidden">
-		<div class="flex flex-col w-1/3 font-mono">
+	<div class="flex flex-row w-full h-full p-3 pb-8 overflow-y-hidden">
+		<div class="flex flex-col w-1/2 xl:w-5/12 max-w-fit font-mono">
+			<span class="text-center pt-5">SRAM</span>
 			<div class="overflow-x-auto  overflow-y-scroll">
 				<table class="table table-zebra w-full">
 					<!-- head -->
 					<thead>
-						<tr class="sticky top-0 z-10 text-center">
-							<th>Address</th>
+						<tr class="sticky top-0 text-center">
+							<th class="hidden xl:block">Address</th>
+							<th class="block xl:hidden">A</th>
 							<th>Data</th>
 						</tr>
 					</thead>
 					<colgroup>
-						<col span="1" style="width: 20%;" />
-						<col span="1" style="width: 80%;" />
+						<col span="1" style="width: 5%;" />
+						<col span="1" style="width: 95%;" />
 					</colgroup>
 					<tbody>
 						<!-- row 2 -->
@@ -60,7 +61,7 @@
 		</div>
 
 		<!-- UART -->
-		<div class="flex flex-col w-1/4 font-mono ml-auto">
+		<div class="flex flex-col  w-5/12 xl:w-1/4 font-mono ml-auto">
 			<span class="text-center pt-5">UART</span>
 			<div class="overflow-y-scroll hide-scrollbar">
 				<div class="inline-block w-full">

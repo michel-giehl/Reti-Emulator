@@ -9,7 +9,6 @@
 
 	import RetiAnimation from '$lib/RetiAnimation.svelte';
 
-	import { runReti, save } from '$lib/controls';
 	import Alert from '$lib/components/Alert.svelte';
 	import { showAnimation } from '$lib/global_vars';
 	import RetiState from '$lib/RetiState.svelte';
@@ -17,48 +16,19 @@
 	onMount(() => {
 		themeChange(false);
 	});
-
-	// Navbar stuff
-	let clockspeedOptions = [0.1, 0.2, 0.3, 0.5];
-	clockspeedOptions.push(...[...Array(5).keys()].map((i) => i + 1));
-
-	let numberStyles = ['Binary', 'Decimal', 'Hexadecimal'];
-
-	let themes = [
-		'solarized',
-		'solarized dark',
-		'basic light',
-		'basic dark',
-		'gruxbox light',
-		'gruvbox dark',
-		'material',
-		'nord'
-	];
-
-	let size = '32';
 </script>
 
 <Alert />
 
 <div class="h-screen w-screen overflow-x-hidden flex flex-col">
-	<div class="flex-initial h-6" />
-	<div class="flex flex-row w-screen">
-		<EditorControlsNavBar
-			{size}
-			on:run={async () => {
-				await runReti();
-			}}
-			on:save={() => {
-				save();
-			}}
-		/>
-		<div class="divider divider-horizontal" />
-		<RetiControlsNavbar {clockspeedOptions} {numberStyles} />
+	<div class="flex flex-0 flex-row w-screen">
+		<EditorControlsNavBar />
+		<RetiControlsNavbar />
 	</div>
 
-	<div id="main-container" class="flex flex-1 w-screen">
+	<div id="main-container" class="flex flex-1 w-screen overflow-y-auto">
 		<CodeMirror />
-		<DragBar leftContainer="left" rightContainer="state-window" />
+		<DragBar leftContainer="left" rightContainer="state-window"/>
 		<div
 			id="state-window"
 			class="w-1/2 overflow-scroll"
@@ -83,6 +53,6 @@
 		@apply bg-black;
 	}
 	.divider:before {
-		@apply bg-black;;
+		@apply bg-black;
 	}
 </style>
