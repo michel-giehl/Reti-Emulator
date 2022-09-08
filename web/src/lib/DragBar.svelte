@@ -1,13 +1,19 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	import ArrowSplitVertical from 'svelte-material-icons/ArrowSplitVertical.svelte';
+
 	export let leftContainer: string;
 	export let rightContainer: string;
 	let dragging = false;
+
+	const dispatch = createEventDispatcher();
 
 	function dragStart(e: MouseEvent | TouchEvent) {
 		e.preventDefault();
 		dragging = true;
 		document.body.classList.add('cursor-col-resize');
+		dispatch('dragstart')
 	}
 
 	function dragMove(e: MouseEvent) {
@@ -22,9 +28,21 @@
 				mainPercentage = 100 - percentage;
 				let codeWindow = document.getElementById(leftContainer);
 				let stateWindow = document.getElementById(rightContainer);
+				const leftPercentageBefore = codeWindow?.style.width;
+				const rightPercentageBefore = stateWindow?.style.width;
 				if (codeWindow && stateWindow) {
 					codeWindow.style.width = `${percentage}%`;
 					stateWindow.style.width = `${mainPercentage}%`;
+					dispatch('sizechange', {
+						before: {
+							left: leftPercentageBefore,
+							right: rightPercentageBefore
+						},
+						after: {
+							left: percentage,
+							right: mainPercentage
+						}
+					});
 				}
 			}
 		}
@@ -33,6 +51,7 @@
 	function dragEnd(e: MouseEvent | TouchEvent) {
 		dragging = false;
 		document.body.classList.remove('cursor-col-resize');
+		dispatch('dragend')
 	}
 </script>
 
@@ -45,7 +64,7 @@
 	on:touchstart={dragStart}
 	on:mousemove={dragMove}
 >
-<svelte:component this={ArrowSplitVertical} size=50></svelte:component>
+	<svelte:component this={ArrowSplitVertical} size="50" />
 </div>
 
 <style>
@@ -54,6 +73,6 @@
 		@apply bg-black;
 	}
 	.divider:before {
-		@apply bg-black;;
+		@apply bg-black;
 	}
 </style>
