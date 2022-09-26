@@ -33,7 +33,7 @@ class ReTi {
             this.registers[CS] = (1 << 31) >>> 0
             this.registers[SP] = SRAM_SIZE - 1
 
-            this.uart = new Array(9).fill(0)
+            this.uart = new Array(8).fill(0)
 
             this.sram = new Array(SRAM_SIZE)
             this.eprom = new Array(EPROM_SIZE)

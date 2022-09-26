@@ -5,7 +5,6 @@
 
 	$: registerWidth = "w-28"
 	numberStyle.subscribe(num => {
-		console.log("NEW NUMBER STYLE: " + num)
 		switch (num) {
 			case 2:
 				registerWidth = "w-60";

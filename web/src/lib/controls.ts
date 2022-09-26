@@ -131,7 +131,6 @@ export const nextReTiState = () => {
   } else if (!$fetch && $phase == 4) {
     config.isFetching.set(true)
     if ($reti.simulateUART($uartData.mode, $uartData.data)) {
-      console.log(`LOL ${$uartData.data}`)
       config.uartData.update((u) => {
         return u
       })
@@ -166,7 +165,6 @@ export async function runReti() {
   statusText(true, 'info', 'Compiling...');
   const mode = $editorMode;
   let code = $codeMirror.getValue();
-  console.log(mode)
   if (mode === "picoc") {
     const compiledPicoCCode = (await compile(code, "picoc")).text
     if (compiledPicoCCode.error) {
@@ -212,7 +210,6 @@ export const switchCodeWindow = (newMode: string) => {
       config.retiCode.set(code)
       break;
     case "clike":
-      console.log("LOLOLOLOLOLOL")
       config.picoCCode.set(code)
       break;
   }
