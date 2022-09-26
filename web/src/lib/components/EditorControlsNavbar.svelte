@@ -80,8 +80,7 @@ import ReTiSettingsModal from './ReTiSettingsModal.svelte';
 		</button>
 	</div>
 
-	<!--
-	<div class="flex-2 ml-2 group">
+	<!--<div class="flex-2 ml-2 group">
 		<div class="tooltip" data-tip="💾 Save">
 			<button class="btn btn-square btn-ghost" on:click={save}>
 				<svelte:component
@@ -116,8 +115,8 @@ import ReTiSettingsModal from './ReTiSettingsModal.svelte';
 				<span>Font</span>
 			</button>
 		</div>
-	</div>
-	-->
+	</div> -->
+
 	<div class="flex-1 ml-2">
 		<label for="reti-modal" class="btn btn-square btn-ghost modal-button group">
 			<svelte:component

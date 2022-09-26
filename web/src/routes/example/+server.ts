@@ -13,7 +13,6 @@ export async function GET(event: RequestEvent) {
         "fibonacci",
         "fibonacci_additions",
         "uart_send",
-        "uart_receive"
       ])
     default:
       return json([])
