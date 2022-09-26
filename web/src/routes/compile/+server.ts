@@ -1,9 +1,9 @@
-import type { RequestEvent, RequestHandler } from "@sveltejs/kit";
 import util from 'node:util';
-import { exec as execOld } from "child_process";
 import fs from "fs/promises";
-import { CompilationError, compile } from "$lib/reti_compiler";
+import { error, type RequestEvent } from "@sveltejs/kit";
 import { json } from '@sveltejs/kit';
+import { exec as execOld } from "child_process";
+import { CompilationError, compile } from "$lib/reti_compiler";
 
 const exec = util.promisify(execOld);
 
@@ -50,10 +50,10 @@ const parseCompiledCode = (code: string): string => {
   lines.shift()
   lines.pop()
   lines.pop()
+  lines.splice(0, 0, "LOADI DS 0")
   for (let i = 0; i < lines.length; i++) {
     lines[i] = lines[i].replace(";", "")
   }
-  lines.splice(0, 0, "LOADI DS 0")
   return lines.join("\n")
 }
 
@@ -83,7 +83,7 @@ export async function POST(event: RequestEvent) {
       return json(result)
     } catch (e) {
       if (e instanceof CompilationError) {
-        return json(e.message)
+        throw error(418, e.message)
       }
     }
   }

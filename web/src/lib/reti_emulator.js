@@ -1,5 +1,7 @@
-const SRAM_SIZE = (1 << 16)
-const EPROM_SIZE = (1 << 16)
+import { statusText } from "$lib/components/Alert.svelte";
+
+const SRAM_SIZE = (1 << 10)
+const EPROM_SIZE = (1 << 8)
 const PC = 0
 const IN1 = 1
 const IN2 = 2
@@ -31,9 +33,9 @@ class ReTi {
             this.registers[CS] = (1 << 31) >>> 0
             this.registers[SP] = SRAM_SIZE - 1
 
-            this.uart = new Array(8).fill(0)
+            this.uart = new Array(SRAM_SIZE).fill(0)
 
-            this.sram = new Array()
+            this.sram = new Array(SRAM_SIZE)
             this.eprom = new Array(EPROM_SIZE)
             this.memoryMap = {
                 0: this.eprom,
@@ -59,6 +61,10 @@ class ReTi {
 
     memWrite(addr, data) {
         let ds = this.registers[DS] >>> 30
+        if (this.memoryMap[ds] === this.sram && addr > SRAM_SIZE) {
+            statusText(true, "error", `Can't write to Address ${addr}`)
+            throw new Error("Canot write to this address")
+        }
         this.memoryMap[ds][addr] = this.#to32Bit(data)
     }
 
@@ -95,26 +101,26 @@ class ReTi {
         }
     }
 
-  simulateUART(mode, data) {
-    // UART writes data into R1 so the reti can read it.
-    if (mode === "send") {
-      if (data.length === 0) return false
-      // check if R2 b1 == 0
-      if ((this.uart[2] & 2) == 0) {
-        this.uart[2] |= 2
-        this.uart[1] = data[0] & 0xff
-        data.shift()
-        return true
-      }
-    } else if (mode === "receive") {
-      if ((this.uart[2] & 1) === 0) {
-        data.push(this.uart[0])
-        this.uart[0] = 0
-        this.uart[2] |= 1
-      }
+    simulateUART(mode, data) {
+        // UART writes data into R1 so the reti can read it.
+        if (mode === "send") {
+            if (data.length === 0) return false
+            // check if R2 b1 == 0
+            if ((this.uart[2] & 2) == 0) {
+                this.uart[2] |= 2
+                this.uart[1] = data[0] & 0xff
+                data.shift()
+                return true
+            }
+        } else if (mode === "receive") {
+            if ((this.uart[2] & 1) === 0) {
+                data.push(this.uart[0])
+                this.uart[0] = 0
+                this.uart[2] |= 1
+            }
+        }
+        return false
     }
-    return false
-  }
 
     #load(instruction) {
         let mode = (instruction >>> 28) & 0x3
@@ -231,9 +237,9 @@ class ReTi {
     }
 
     #loadConstants() {
-        this.eprom[Math.pow(2,16) - 1] = 1 << 30 // UART
-        this.eprom[Math.pow(2,16) - 2] = (1 << 31) >>> 0 // SRAM
-        this.eprom[Math.pow(2,16) - 3] = 0x70000000 // LOADI PC 0
+        this.eprom[Math.pow(2, 16) - 1] = 1 << 30 // UART
+        this.eprom[Math.pow(2, 16) - 2] = (1 << 31) >>> 0 // SRAM
+        this.eprom[Math.pow(2, 16) - 3] = 0x70000000 // LOADI PC 0
         this.uart[2] = 1;
         this.registers[DS] = (1 << 31) >>> 0
         this.registers[SP] = SRAM_SIZE - 1

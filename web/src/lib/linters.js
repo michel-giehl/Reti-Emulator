@@ -1,4 +1,4 @@
-import {compile} from "$lib/controls"
+import { compile } from "$lib/controls"
 
 async function retiValidator(text, options) {
     let found = []
@@ -18,20 +18,16 @@ async function retiValidator(text, options) {
 async function picoCValidator(text, options) {
     let found = []
     let result = await compile(text, "picoc")
-        console.log(result.text)
     if (result.text.error) {
-        let output = result.text.message
-        let isError = true 
-        if (isError)  {
-            let line = output.split(":")[1]
-            let char = output.split(":")[2]
-            found.push({
-                message: output,
-                severity: "error",
-                from: CodeMirror.Pos(line - 1, char),
-                to: CodeMirror.Pos(line - 1, text.split("\n")[line - 1].length)
-            })
-        }
+        let output = result.text.message.split("\n")[0]
+        let line = output.split(":")[1]
+        let char = output.split(":")[2]
+        found.push({
+            message: output,
+            severity: "error",
+            from: CodeMirror.Pos(line - 1, char),
+            to: CodeMirror.Pos(line - 1, text.split("\n")[line - 1].length)
+        })
     }
     return found
 }

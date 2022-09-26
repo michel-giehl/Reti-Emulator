@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { onMount } from 'svelte';
 	import { codeMirror } from '$lib/global_vars';
 	import { retiValidator, picoCValidator } from '$lib/linters.js';

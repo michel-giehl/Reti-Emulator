@@ -1,17 +1,17 @@
 <script lang="ts">
-	import CodeMirror from '$lib/CodeMirror.svelte';
-	import DragBar from '$lib/DragBar.svelte';
+	import CodeMirror from '$lib/components/CodeMirror.svelte';
+	import DragBar from '$lib/components/DragBar.svelte';
 	import { onMount } from 'svelte';
 	import { themeChange } from 'theme-change';
 
 	import EditorControlsNavBar from '$lib/components/EditorControlsNavbar.svelte';
 	import RetiControlsNavbar from '$lib/components/RetiControlsNavbar.svelte';
 
-	import RetiAnimation from '$lib/RetiAnimation.svelte';
+	import RetiAnimation from '$lib/components/RetiAnimation.svelte';
 
 	import Alert from '$lib/components/Alert.svelte';
 	import { showAnimation } from '$lib/global_vars';
-	import RetiState from '$lib/RetiState.svelte';
+	import RetiState from '$lib/components/RetiState.svelte';
 
 	onMount(() => {
 		themeChange(false);

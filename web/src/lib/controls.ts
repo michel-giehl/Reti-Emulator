@@ -17,20 +17,6 @@ let $retiCode: string;
 let $editorMode: string;
 let $uartData: any;
 
-export const updateClockSpeed = (speed: number) => {
-  if ($reti === null || !$running)
-    return;
-
-  const animationSpeed = 1000 / speed
-
-  if ($running && config.retiClock.timer !== null) {
-    clearInterval(config.retiClock.timer)
-  }
-  config.retiClock.timer = setInterval(() => {
-    if (!$paused)
-      nextReTiState()
-  }, animationSpeed)
-}
 
 /**
  * Compile reti/picoc code
@@ -44,12 +30,34 @@ export async function compile(code: string, language: 'picoc' | 'reti') {
     headers: { Language: language },
     body: code
   });
+
   const text = await response.text();
+
   if (response.ok) {
     let json = { error: false, text: JSON.parse(text) };
     return json;
   }
+
   return { error: !response.ok, text: text };
+}
+
+export const updateClockSpeed = (speed: number) => {
+  if ($reti === null || !$running)
+    return;
+
+  const animationSpeed = 1000 / speed
+
+  if ($running && config.retiClock.timer !== null) {
+    clearInterval(config.retiClock.timer)
+  }
+  config.retiClock.timer = setInterval(() => {
+    try {
+      if (!$paused)
+        nextReTiState()
+    } catch (e) {
+      clearInterval(config.retiClock.timer)
+    }
+  }, animationSpeed)
 }
 
 const doAnimate = () => {

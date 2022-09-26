@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!-- CodeMirror imports -->
-		<link rel="stylesheet" href="%sveltekit.assets%/codemirror/lib/codemirror.min.css">
-        <link rel="stylesheet" href="%sveltekit.assets%/codemirror/addon/lint.css">
-        <link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/monokai.css">
-        <link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/solarized.css">
-        <link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/neat.css">
-        <link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/material-darker.css">
-        <link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/midnight.css">
-        <link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/vscode-dark.css">
-        <script src="%sveltekit.assets%/codemirror/lib/codemirror.min.js"></script>
-        <script src="%sveltekit.assets%/codemirror/mode/reti.js"></script>
-        <script src="%sveltekit.assets%/codemirror/mode/clike.min.js"></script>
-        <script src="%sveltekit.assets%/codemirror/addon/lint.js"></script>
 
-		<!-- End -->
-		%sveltekit.head%
-	</head>
-	<body>
-		<div>%sveltekit.body%</div>
-	</body>
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- CodeMirror imports -->
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/lib/codemirror.min.css">
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/addon/lint.css">
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/monokai.css">
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/solarized.css">
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/neat.css">
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/material-darker.css">
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/midnight.css">
+	<link rel="stylesheet" href="%sveltekit.assets%/codemirror/theme/vscode-dark.css">
+	<script src="%sveltekit.assets%/codemirror/lib/codemirror.min.js"></script>
+	<script src="%sveltekit.assets%/codemirror/mode/reti.js"></script>
+	<script src="%sveltekit.assets%/codemirror/mode/clike.min.js"></script>
+	<script src="%sveltekit.assets%/codemirror/addon/lint.js"></script>
+
+	<!-- End -->
+	%sveltekit.head%
+</head>
+
+<body>
+	<noscript>
+		<div style="display: flex; justify-content: center; align-items: center; font-family: Arial, Helvetica;">
+			<h1 style="background: grey; padding-left: 2rem; padding-right: 2rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 10px;">This website requires JavaScript!</h1>
+		</div>
+	</noscript>
+	<div>%sveltekit.body%</div>
+</body>
+
 </html>

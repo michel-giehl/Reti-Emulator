@@ -55,7 +55,7 @@
 		<div
 			class="alert {alertType[
 				$notification.type
-			]} shadow-lg w-1/4 z-40 fixed left-0 right-2 top-5 ml-auto"
+			]} shadow-lg w-1/4 z-40 fixed left-0 right-2 top-16 ml-auto"
 			in:fade={{ duration: 100 }}
 			out:fly={{ y: 20, duration: 800 }}
 		>

@@ -4,7 +4,6 @@ import { json } from '@sveltejs/kit';
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function GET(event: RequestEvent) {
   const language = event.request.headers.get("language")
-
   switch (language) {
     case "picoc":
       return json(["fibonacci"])

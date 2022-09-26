@@ -33,7 +33,7 @@ export function stringifyNumber(numStr: string, numberStyle: number) {
             count++
         }
         if (count > 4) {
-            result = result.substring(0, result.length - count) + `${last}${convertToUpperNumber(count)}`
+            result = result.substring(0, result.length - count) + `${last}<span class="font-normal">${convertToUpperNumber(count)}</span>`
         }
     }
     return result

@@ -3,8 +3,16 @@
 	import Play from 'svelte-material-icons/Play.svelte';
 	import Rewind from 'svelte-material-icons/Rewind.svelte';
 	import FastForward from 'svelte-material-icons/FastForward.svelte';
-	import { clockSpeed, showAnimation, paused, numberStyle } from '$lib/global_vars';
+	import {
+		clockSpeed,
+		showAnimation,
+		paused,
+		numberStyle,
+		canvasScale,
+		reti
+	} from '$lib/global_vars';
 	import { nextReTiState, previousReTiState } from '$lib/controls';
+	import { draw } from '$lib/canvas';
 
 	const numberStyleMapping: { [key: string]: number } = {
 		binary: 2,
@@ -14,14 +22,22 @@
 
 	const clockspeedOptions = [0.2, 0.5, 1, 2, 5, 10, 100];
 
-	const onSubmit = (e: any) => {
+	const onNumberStyleSelect = (e: any) => {
 		const val = e?.target?.attributes?.value?.value ?? 'decimal';
 		$numberStyle = numberStyleMapping[val.toLowerCase()];
-		console.log($numberStyle);
+	};
+
+	let scale = 10;
+	const onScaleChange = () => {
+		const defaultScale = 0.6;
+		const increment = defaultScale / 10;
+		$canvasScale = scale * increment;
+		draw($reti);
 	};
 </script>
 
 <div class="navbar bg-base-100">
+	<!-- Play/Pause Button -->
 	<div class="flex-2">
 		<button
 			class="btn btn-square btn-ghost group"
@@ -37,6 +53,8 @@
 			<span class="group-hover:hidden block">{$paused ? 'Play' : 'Pause'}</span>
 		</button>
 	</div>
+
+	<!-- Back Button -->
 	<div class="flex-2 ml-2">
 		<button
 			class="btn btn-square btn-ghost group"
@@ -48,6 +66,8 @@
 			<span class="group-hover:hidden block">Prev</span>
 		</button>
 	</div>
+
+	<!-- Next Button -->
 	<div class="flex-1 ml-2">
 		<button
 			class="btn btn-square btn-ghost group"
@@ -60,6 +80,22 @@
 		</button>
 	</div>
 
+	<!-- Scale slider -->
+	<div class="flex-none ml-2 font-semibold uppercase text-sm">
+		<label for="scale" class="hidden lg:block mr-2">Scale</label>
+		<input
+			id="scale"
+			type="range"
+			min="5"
+			max="15"
+			step="1"
+			class="range range-xs w-12 xl:w-16 2xl:w-24 mr-4"
+			bind:value={scale}
+			on:input={onScaleChange}
+		/>
+	</div>
+
+	<!-- Animation Toggle -->
 	<div class="flex-none ml-2 font-semibold uppercase text-sm">
 		<label for="toggle-animation" class="swap hidden lg:block">Animation</label>
 		<input
@@ -69,10 +105,14 @@
 			bind:checked={$showAnimation}
 		/>
 	</div>
+
+	<!-- Clockspeed Select -->
 	<div class="flex-none dropdown dropdown-hover ml-2">
+		<!-- Label for small screen width -->
 		<label tabindex="0" class="btn btn-outline m-1 flex xl:hidden" for="clockspeed-dropdown"
 			>{$clockSpeed} hz</label
 		>
+		<!-- Label for normal screen width -->
 		<label tabindex="0" class="btn btn-outline m-1 w-36 hidden xl:flex" for="clockspeed-dropdown"
 			>Speed: {$clockSpeed} hz</label
 		>
@@ -97,10 +137,14 @@
 			/>
 		</ul>
 	</div>
+
+	<!-- Number Style Select -->
 	<div class="flex-none dropdown dropdown-hover ml-2">
+		<!-- Label for small screen width -->
 		<label tabindex="0" class="btn btn-outline m-1 flex xl:hidden" for="number-style-dropdown"
 			>#</label
 		>
+		<!-- Label for normal screen width -->
 		<label tabindex="0" class="btn btn-outline m-1 hidden xl:flex" for="number-style-dropdown"
 			>Number Style</label
 		>
@@ -112,7 +156,9 @@
 			{#each Object.keys(numberStyleMapping) as style}
 				<li>
 					<!-- svelte-ignore a11y-missing-attribute -->
-					<a value={style} on:click={onSubmit}>{style.charAt(0).toUpperCase() + style.slice(1)}</a>
+					<a value={style} on:click={onNumberStyleSelect}
+						>{style.charAt(0).toUpperCase() + style.slice(1)}</a
+					>
 				</li>
 			{/each}
 		</ul>
