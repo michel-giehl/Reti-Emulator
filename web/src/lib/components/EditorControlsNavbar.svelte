@@ -6,7 +6,7 @@
 	import { loadExample, runReti, switchCodeWindow } from '$lib/controls';
 	import { CompilationError, compileSingle } from '$lib/reti_compiler';
 	import { statusText } from './Alert.svelte';
-import ReTiSettingsModal from './ReTiSettingsModal.svelte';
+	import ReTiSettingsModal from './ReTiSettingsModal.svelte';
 
 	// Load examples when user switches languages
 	// TODO: load all examples on mount
@@ -129,7 +129,7 @@ import ReTiSettingsModal from './ReTiSettingsModal.svelte';
 	</div>
 
 	<!-- UART MODAL -->
-	<ReTiSettingsModal id="reti-modal"/>
+	<ReTiSettingsModal id="reti-modal" />
 
 	<div class="flex-none ml-2 hidden xl:block">
 		<select
@@ -179,7 +179,8 @@ import ReTiSettingsModal from './ReTiSettingsModal.svelte';
 				$editorMode = mode;
 			}}
 		>
-			<option selected value="reti">ReTi Assembler</option>
+			<option selected value="reti">ReTi (SRAM)</option>
+			<option value="reti-eprom">ReTi (EPROM)</option>
 			<option value="picoc">Pico-C</option>
 		</select>
 	</div>

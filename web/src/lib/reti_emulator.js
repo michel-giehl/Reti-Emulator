@@ -30,7 +30,6 @@ class ReTi {
             this.bds = reti.bds
         } else {
             this.registers = new Array(9).fill(0)
-            this.registers[CS] = (1 << 31) >>> 0
             this.registers[SP] = SRAM_SIZE - 1
 
             this.uart = new Array(8).fill(0)
@@ -48,11 +47,16 @@ class ReTi {
         }
     }
 
-    readProgram(code) {
+    readProgram(code, mode) {
+        console.log("MODE: " + mode)
+        let ram = mode === "reti" ? this.sram : this.eprom;
         for (let i = 0; i < code.length; i++) {
-            this.sram[i] = code[i]
+            ram[i] = code[i]
         }
         this.bds = code.length + 1
+        if (mode === "reti-eprom") {
+            this.registers[CS] = 0
+        }
     }
 
     #to32Bit(num) {
@@ -241,6 +245,7 @@ class ReTi {
         this.eprom[Math.pow(2, 16) - 2] = (1 << 31) >>> 0 // SRAM
         this.eprom[Math.pow(2, 16) - 3] = 0x70000000 // LOADI PC 0
         this.uart[2] = 1;
+        this.registers[CS] = (1 << 31) >>> 0
         this.registers[DS] = (1 << 31) >>> 0
         this.registers[SP] = SRAM_SIZE - 1
     }

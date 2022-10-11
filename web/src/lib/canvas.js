@@ -1,6 +1,7 @@
 import { registerNames, numberStyle, showAnimation, canvasScale, strokeColor } from "$lib/global_vars"
 import { decompile } from "$lib/reti_decompiler"
 import { convertToUpperNumber, stringifyNumber } from "$lib/NumberUtils"
+import { CS } from "$lib/reti_emulator"
 import Konva from "konva"
 
 let stage = null
@@ -854,10 +855,10 @@ function drawEPROM(x, y, reti, name, driverNames) {
         points: [0, 69, 0, 0],
         strokeWidth: strokeWidth,
         stroke: colorPalette.stroke,
-        name: segments[2],
+        name: segments[1],
     })
     drawDriver(pos.x, pos.y + 90, 0, 50, 3, pos.x - 15, pos.y + 55, driverNames[1], {
-        name: segments[2],
+        name: segments[1],
     }, 1)
 
     const numBitsText = new Konva.Text({
@@ -890,7 +891,7 @@ function drawEPROM(x, y, reti, name, driverNames) {
     drawLine(pos.x, pos.y + 102, pos.x, pos.y + 140, {
         strokeWidth: strokeWidth,
         stroke: colorPalette.stroke,
-        name: segments[2],
+        name: segments[1],
     })
 
     let textSRAM = new Konva.Text({
@@ -1161,20 +1162,21 @@ function setALUMode(num) {
     textElement.fontSize(mode.size)
 }
 
-function animateFetch(phase) {
+function animateFetch(phase, reti) {
+    const ram = reti.registers[CS] === 0 ? "eprom" : "sram";
     const PC2AddressPath = [
         "register-pc-active",
         "register-pc-out",
         "register-pc-driver-address-path-active",
         "address-path",
-        "sram-address",
+        `${ram}-address`,
     ]
 
     const dataPath2I = [
         "data-path-right",
         "register-i-in",
         "register-i-active",
-        "sram-read",
+        `${ram}-read`,
     ]
     switch (phase) {
         case 0:

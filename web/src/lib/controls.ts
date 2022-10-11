@@ -62,7 +62,7 @@ export const updateClockSpeed = (speed: number) => {
 
 const doAnimate = () => {
   if ($fetch) {
-    animateFetch($phase)
+    animateFetch($phase, $reti)
   } else {
     let reti = $reti
     let command = decompile(reti.registers[I])
@@ -110,12 +110,12 @@ const doAnimate = () => {
 }
 
 export const nextReTiState = () => {
+  $retiStates.push(new ReTi($reti))
+  if ($retiStates.length >= 20) {
+    $retiStates.shift()
+  }
+  config.retiStates.update(val => val)
   if ($phase === 0) {
-    $retiStates.push(new ReTi($reti))
-    if ($retiStates.length >= 20) {
-      $retiStates.shift()
-    }
-    config.retiStates.update(val => val)
     if ($fetch) {
       $reti.fetch()
       config.reti.update(reti => reti)
@@ -143,21 +143,20 @@ export const nextReTiState = () => {
 
 
 export const previousReTiState = () => {
+  if ($retiStates.length === 0) {
+    statusText(true, "error", "Can't go back any futher")
+    config.phase.set(0)
+    return
+  }
   config.phase.update(val => val - 1)
+  config.reti.set($retiStates.pop())
+  config.retiStates.update(val => val)
   if ($phase === -1) {
-    if ($retiStates.length === 0) {
-      statusText(true, "error", "Can't go back any futher")
-      config.phase.set(0)
-      return
-    }
     config.phase.set($fetch ? 3 : 2)
     config.isFetching.update(val => !val)
-    config.reti.set($retiStates.pop())
-    config.retiStates.update(val => val)
   }
   draw($reti)
   doAnimate()
-  // display_state()
 }
 
 export async function runReti() {
@@ -188,12 +187,11 @@ export async function runReti() {
   config.isFetching.set(true);
   config.phase.set(0);
   let reti = new ReTi();
-  reti.readProgram(compiledCode.text);
+  reti.readProgram(compiledCode.text, $editorMode);
   config.reti.set(reti);
   reti.fetch();
   draw(reti);
-  // doAnimate()
-  // display_state()
+  doAnimate()
   updateClockSpeed($clockSpeed)
 }
 
@@ -207,6 +205,7 @@ export const switchCodeWindow = (newMode: string) => {
   const code = $codeMirror.getValue()
   switch (currMode) {
     case "reti":
+    case "reti-eprom":
       config.retiCode.set(code)
       break;
     case "clike":
@@ -216,6 +215,7 @@ export const switchCodeWindow = (newMode: string) => {
 
   switch (newMode) {
     case "reti":
+    case "reti-eprom":
       $codeMirror.setValue($retiCode)
       $codeMirror.setOption('mode', 'reti')
       break;

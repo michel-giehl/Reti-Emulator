@@ -32,7 +32,7 @@
 		<div
 			id="state-window"
 			class="w-1/2 overflow-scroll"
-			on:mousewheel={(e) => {
+			on:mousewheel|preventDefault={(e) => {
 				const stateWindow = document.getElementById('state-window');
 				if (stateWindow === null) return;
 				stateWindow.scrollLeft += e.deltaY;
