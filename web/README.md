@@ -41,7 +41,7 @@ git clone https://github.com/michel-giehl/Reti-Emulator .
 ```
 
 ```sh
-cd ./Reti-Emulator/Web-Redesign/
+cd ./Reti-Emulator/web/
 ```
 
 ```sh
