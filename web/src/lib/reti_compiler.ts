@@ -71,7 +71,7 @@ export const compileLoad = (args: Array<string>) => {
         case "loadi":
             instruction = (1 << 30) | 3 << 28;
             instruction |= register(args[1]) << 22; // destination
-            instruction |= getNumber(args[2]);
+            instruction |= toUnsigned(getNumber(args[2]));
             break;
         default:
             throw new CompilationError(`Invalid instruction ${args[0]}`);
@@ -112,8 +112,14 @@ export const compileJump = (args: Array<string>) => {
 
     if (args[0].toLowerCase() === "int") {
         instruction |= 1 << 25;
+        if (args.length !== 2) {
+            throw new CompilationError(`Expected 1 argument, ${args.length - 1} provided.`);
+        }
+        instruction |= toUnsigned(getNumber(args[1]));
+        return instruction;
     } else if (args[0].toLowerCase() === "rti") {
         instruction |= 2 << 25;
+        return instruction;
     }
 
 
@@ -218,7 +224,7 @@ export const compileSingle = (instruction: string) => {
         return compileLoad(args);
     } else if (command.includes("store") || command.includes("move")) {
         return compileStore(args);
-    } else if(command.includes("jump") || command in ["nop", "int", "rti"]) {
+    } else if(command.includes("jump") || ["nop", "int", "rti"].includes(command.toLowerCase())) {
         return compileJump(args);
     } else {
         return compileCompute(args);

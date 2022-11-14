@@ -81,8 +81,9 @@
 	</div>
 
 	<!-- Scale slider -->
+	{#if $showAnimation}
 	<div class="flex-none ml-2 font-semibold uppercase text-sm">
-		<label for="scale" class="hidden lg:block mr-2">Scale</label>
+		<label for="scale" class="hidden lg:block mr-2">Graph Scale</label>
 		<input
 			id="scale"
 			type="range"
@@ -94,10 +95,12 @@
 			on:input={onScaleChange}
 		/>
 	</div>
+	{/if}
+
 
 	<!-- Animation Toggle -->
 	<div class="flex-none ml-2 font-semibold uppercase text-sm">
-		<label for="toggle-animation" class="swap hidden lg:block">Animation</label>
+		<label for="toggle-animation" class="swap hidden lg:block">Show Graph</label>
 		<input
 			id="toggle-animation"
 			type="checkbox"
@@ -107,7 +110,7 @@
 	</div>
 
 	<!-- Clockspeed Select -->
-	<div class="flex-none dropdown dropdown-hover ml-2">
+	<div class="flex-none dropdown ml-2">
 		<!-- Label for small screen width -->
 		<label tabindex="0" class="btn btn-outline m-1 flex xl:hidden" for="clockspeed-dropdown"
 			>{$clockSpeed} hz</label
@@ -139,7 +142,7 @@
 	</div>
 
 	<!-- Number Style Select -->
-	<div class="flex-none dropdown dropdown-hover ml-2">
+	<div class="flex-none dropdown ml-2">
 		<!-- Label for small screen width -->
 		<label tabindex="0" class="btn btn-outline m-1 flex xl:hidden" for="number-style-dropdown"
 			>#</label

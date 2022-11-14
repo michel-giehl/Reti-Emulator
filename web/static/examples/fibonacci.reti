@@ -7,5 +7,6 @@ ADD ACC IN2       ; ACC = IN1 + IN2
 MOVE IN2 IN1      ; IN1 = IN2
 MOVE ACC IN2      ; IN2 = ACC
 STOREIN SP IN1 0  ; store in SRAM
+INT 1             ; print(IN1)
 ADDI SP 1         ; increment counter
-JUMP -6           ; loop forever
+JUMP -7           ; loop forever

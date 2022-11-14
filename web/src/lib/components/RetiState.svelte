@@ -23,7 +23,7 @@
 	<!-- Instruction display -->
 	<div class="w-auto h-auto whitespace-nowrap">
 		<p class="font-mono text-base xl:text-3xl p-1" id="instruction-counter">
-			Instruction {$reti.registers[0]} | {$isFetching ? 'FETCH P' : 'EXECUTE P'}{$isFetching
+			Instruction {$reti.toSimpleNum($reti.registers[0])} | {$isFetching ? 'FETCH P' : 'EXECUTE P'}{$isFetching
 				? $phase === 0
 					? $phase
 					: $phase + 1
@@ -38,21 +38,28 @@
 	<div class="relative flex w-auto h-auto p-1">
 		<div class="flex flex-row flex-wrap w-full">
 			{#each $reti.registers as register, idx}
-				<div
-					class="grid flex-grow h-16 card bg-base-300 rounded-box place-items-center mr-2 mb-2 w-32 {registerWidth}"
-				>
+			<div
+			class="grid flex-grow h-20 card bg-base-300 rounded-box place-items-center mr-2 mb-2 w-32 {registerWidth}"
+			>
 					<p class="register-text text-lg ml-4 mr-4">{registerNames[idx]}</p>
+					<div class="tooltip" data-tip="Raw Value">
 					<p class="register-text text-sm ml-4 mr-4">
-						{@html stringifyNumber(register, $numberStyle)}
+						<strong>{@html stringifyNumber(register, $numberStyle)}</strong>
 					</p>
 				</div>
-			{/each}
+					<div class="tooltip" data-tip="Simple Value">
+						<p class="register-text text-sm ml-4 mr-4">
+							<strong>{@html stringifyNumber($reti.toSimpleNum(register), $numberStyle)}</strong>
+						</p>
+					</div>
+				</div>
+					{/each}
 		</div>
 	</div>
 
 	<!-- SRAM -->
-	<div class="flex flex-row w-full h-full p-3 pb-8 overflow-y-hidden">
-		<div class="flex flex-col w-1/2 xl:w-5/12 max-w-fit font-mono">
+	<div class="flex flex-row w-full h-full p-2 pb-8 overflow-y-hidden">
+		<div class="flex flex-col w-1/2 xl:w-1/2 max-w-fit font-mono">
 			<span class="text-center pt-5">SRAM</span>
 			<div class="overflow-x-auto  overflow-y-scroll">
 				<table class="table table-zebra w-full">
@@ -72,10 +79,10 @@
 						<!-- row 2 -->
 						{#each $reti.sram as data, addr}
 							{#if data !== undefined}
-								<tr class={$reti.registers[0] === addr ? 'active text-info' : ''}>
+								<tr class={$reti.toSimpleNum($reti.registers[0]) === addr && $reti.registers[0] >= Math.pow(2,31) ? 'active text-info' : ''}>
 									<td class="text-left">{addr}</td>
 									<td class="text-left"
-										>{@html addr < $reti.bds
+										>{@html addr === 0 || addr < $reti.bds && addr >= $reti.processBegin
 											? decompile(data)
 											: stringifyNumber(data, $numberStyle)}</td
 									>
@@ -87,8 +94,40 @@
 			</div>
 		</div>
 
+		<!-- EPROM -->
+		<div class="hidden xl:flex flex-col w-1/2 font-mono ml-5">
+			<span class="text-center pt-5">EPROM</span>
+			<div class="overflow-x-auto  overflow-y-scroll">
+				<div class="inline-block w-full">
+					<div class="overflow-x-visible">
+						<table class="table table-zebra w-full">
+							<!-- head -->
+							<thead>
+								<tr>
+									<th>A</th>
+									<th>Data</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- row 2 -->
+								{#each $reti.eprom as data, addr}
+									{#if data !== undefined}
+										<tr class={$reti.toSimpleNum($reti.registers[0]) === addr && $reti.registers[0] < Math.pow(2,30) ? 'active text-info' : ''}>
+											<td class="text-left">{addr}</td>
+											<td class="text-left">{@html addr < $reti.bds
+												? decompile(data)
+												: stringifyNumber(data, $numberStyle)}</td>
+										</tr>
+									{/if}
+								{/each}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- UART -->
-		<div class="flex flex-col  w-5/12 xl:w-1/4 font-mono ml-auto">
+		<div class="flex flex-col w-5/12 xl:w-1/2 font-mono ml-5">
 			<span class="text-center pt-5">UART</span>
 			<div class="overflow-y-scroll hide-scrollbar">
 				<div class="inline-block w-full">

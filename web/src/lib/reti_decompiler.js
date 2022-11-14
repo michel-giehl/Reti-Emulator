@@ -15,7 +15,7 @@ function decompileLoad(instruction) {
         case 1:
             return `LOADIN ${registerNames[addr]} ${registerNames[dest]} ${toSigned(param)}`
         case 3:
-            return `LOADI ${registerNames[dest]} ${param}`
+            return `LOADI ${registerNames[dest]} ${toSigned(param)}`
     }
 }
 

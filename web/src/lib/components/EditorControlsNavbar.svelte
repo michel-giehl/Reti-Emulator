@@ -179,8 +179,7 @@
 				$editorMode = mode;
 			}}
 		>
-			<option selected value="reti">ReTi (SRAM)</option>
-			<option value="reti-eprom">ReTi (EPROM)</option>
+			<option selected value="reti">ReTi</option>
 			<option value="picoc">Pico-C</option>
 		</select>
 	</div>

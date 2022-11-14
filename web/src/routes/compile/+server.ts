@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import { error, type RequestEvent } from "@sveltejs/kit";
 import { json } from '@sveltejs/kit';
 import { exec as execOld } from "child_process";
-import { CompilationError, compile } from "$lib/reti_compiler";
+import { CompilationError, compile, register } from "$lib/reti_compiler";
 
 const exec = util.promisify(execOld);
 
@@ -50,9 +50,14 @@ const parseCompiledCode = (code: string): string => {
   lines.shift()
   lines.pop()
   lines.pop()
-  lines.splice(0, 0, "LOADI DS 0")
   for (let i = 0; i < lines.length; i++) {
     lines[i] = lines[i].replace(";", "")
+    lines[i] = lines[i].replace("MULT", "MUL")
+    if (lines[i].startsWith("CALL PRINT")) {
+      let reg = lines[i].split("CALL PRINT ")[1];
+      let registerNum = register(reg);
+      lines[i] = `INT ${registerNum}`;
+    }
   }
   return lines.join("\n")
 }

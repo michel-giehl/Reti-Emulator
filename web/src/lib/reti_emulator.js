@@ -1,6 +1,7 @@
 import { statusText } from "$lib/components/Alert.svelte";
+import { compileSingle } from "./reti_compiler";
 
-const SRAM_SIZE = (1 << 10)
+const SRAM_SIZE = (1 << 12)
 const EPROM_SIZE = (1 << 8)
 const PC = 0
 const IN1 = 1
@@ -16,6 +17,8 @@ class ReTi {
 
     constructor(reti) {
         // create deep copy if argument is provided
+        this.processBegin = 3
+        this.dataSegmentSize = 32
         if (reti) {
             this.registers = [...reti.registers]
             this.uart = [...reti.uart]
@@ -30,11 +33,10 @@ class ReTi {
             this.bds = reti.bds
         } else {
             this.registers = new Array(9).fill(0)
-            this.registers[SP] = SRAM_SIZE - 1
 
             this.uart = new Array(8).fill(0)
+            this.sram = new Array(5).fill(0)
 
-            this.sram = new Array(SRAM_SIZE)
             this.eprom = new Array(EPROM_SIZE)
             this.memoryMap = {
                 0: this.eprom,
@@ -48,42 +50,81 @@ class ReTi {
     }
 
     readProgram(code, mode) {
-        console.log("MODE: " + mode)
-        let ram = mode === "reti" ? this.sram : this.eprom;
+        // load eprom stuff
+        let instrLen = code.length;
+        this.eprom[0] = compileSingle("LOADI DS -2097152")
+        this.eprom[1] = compileSingle("MULI DS 1024")
+        this.eprom[2] = compileSingle("MOVE DS SP")
+        this.eprom[3] = compileSingle("MOVE DS BAF")
+        this.eprom[4] = compileSingle("MOVE DS CS")
+        this.eprom[5] = compileSingle(`ADDI SP ${this.processBegin + instrLen + this.dataSegmentSize - 1}`)
+        this.eprom[6] = compileSingle("ADDI BAF 2")
+        this.eprom[7] = compileSingle(`ADDI CS ${this.processBegin}`)
+        this.eprom[8] = compileSingle(`ADDI DS ${this.processBegin + instrLen}`)
+        this.eprom[9] = compileSingle("MOVE CS PC")
+        // load sram stuff
+        this.sram[0] = compileSingle("JUMP 0");
+        this.sram[1] = (1 << 31) >>> 0;
         for (let i = 0; i < code.length; i++) {
-            ram[i] = code[i]
+            this.sram[i + this.processBegin] = code[i]
         }
-        this.bds = code.length + 1
-        if (mode === "reti-eprom") {
-            this.registers[CS] = 0
+        this.bds = code.length + this.processBegin
+    }
+
+    toSimpleNum(num) {
+        if (num >= Math.pow(2,31)) {
+            return num - Math.pow(2,31)
         }
+        if (num >= Math.pow(2,30)) {
+            return num - Math.pow(2,30)
+        }
+        return num
     }
 
     #to32Bit(num) {
-        return num >> 0
+        return num >>> 0
     }
 
     memWrite(addr, data) {
-        let ds = this.registers[DS] >>> 30
-        if (this.memoryMap[ds] === this.sram && addr > SRAM_SIZE) {
-            statusText(true, "error", `Can't write to Address ${addr}`)
-            throw new Error("Canot write to this address")
+        if (addr >= Math.pow(2,31)) {
+            this.sram[addr - Math.pow(2,31)] = this.#to32Bit(data)
+        } else if(addr >= Math.pow(2,30)) {
+            this.uart[addr - Math.pow(2,31)] = this.#to32Bit(data)
+        } else {
+            let ds = this.registers[DS] >>> 30
+            if (this.memoryMap[ds] === this.sram && addr > SRAM_SIZE) {
+                statusText(true, "error", `Can't write to Address ${addr}`)
+                throw new Error("Canot write to this address")
+            }
+            this.memoryMap[ds][addr] = this.#to32Bit(data)
         }
-        this.memoryMap[ds][addr] = this.#to32Bit(data)
     }
 
     memRead(addr, register = null, seg = DS) {
-        let segment = this.registers[seg] >>> 30
-        let data = this.memoryMap[segment][addr] || 0
+        let data = 0;
+        if (addr >= Math.pow(2,31)) {
+            data = this.sram[addr - Math.pow(2,31)] || 0
+        } else if(addr >= Math.pow(2,30)) {
+            data = this.uart[addr - Math.pow(2,31)] || 0
+        } else {
+            let segment = this.registers[seg] >>> 30
+            data = this.memoryMap[segment][addr] || 0
+        }
         if (register != null) {
             this.registers[register] = data
-            return
         }
         return data
     }
 
     fetch() {
-        this.memRead(this.registers[PC], I, CS)
+        let instr = this.registers[PC];
+        if (instr >= Math.pow(2,31)) {
+            this.registers[I] = this.sram[instr - Math.pow(2,31)]
+        } else if (instr >= Math.pow(2,30)) {
+            this.registers[I] = this.uart[instr - Math.pow(2,30)]
+        } else {
+            this.registers[I] = this.eprom[instr]
+        }
     }
 
     execute() {
@@ -139,10 +180,12 @@ class ReTi {
                 this.memRead(this.registers[addr] + this.#toSigned(param), dest)
                 break
             case 0b11: // LOADI
-                this.registers[dest] = param
+                this.registers[dest] = this.#toSigned(param)
                 break
         }
-        this.registers[PC]++
+        if (dest != PC) {
+            this.registers[PC]++
+        }
     }
 
     #store(instruction) {
@@ -172,6 +215,7 @@ class ReTi {
         let j = (instruction >>> 25) & 0x3
         let param = this.#toSigned(instruction & 0x3fffff)
         let accRegister = this.registers[ACC]
+        accRegister = ((~(accRegister >>> 0) + 1) * -1);
         let conditionMap = {
             0: false,
             1: accRegister > 0,
@@ -183,7 +227,10 @@ class ReTi {
             7: true,
         }
         // INT i & RTI
-        if (j === 1 || j === 2) {
+        if (j === 1) {
+            statusText(true, "info", `<strong>OUTPUT</strong> ${this.registers[param]}`)
+        }
+        if (j === 2) {
             throw new Error("Not yet implemented")
         }
 
@@ -245,9 +292,6 @@ class ReTi {
         this.eprom[Math.pow(2, 16) - 2] = (1 << 31) >>> 0 // SRAM
         this.eprom[Math.pow(2, 16) - 3] = 0x70000000 // LOADI PC 0
         this.uart[2] = 1;
-        this.registers[CS] = (1 << 31) >>> 0
-        this.registers[DS] = (1 << 31) >>> 0
-        this.registers[SP] = SRAM_SIZE - 1
     }
 
     #toSigned(num) {

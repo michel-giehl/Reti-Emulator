@@ -31,12 +31,7 @@
 		<DragBar leftContainer="left" rightContainer="state-window"/>
 		<div
 			id="state-window"
-			class="w-1/2 overflow-scroll"
-			on:mousewheel|preventDefault={(e) => {
-				const stateWindow = document.getElementById('state-window');
-				if (stateWindow === null) return;
-				stateWindow.scrollLeft += e.deltaY;
-			}}
+			class="w-1/2 {$showAnimation ? "overflow-x-scroll" : "overflow-hidden"}"
 		>
 			{#if $showAnimation}
 				<RetiAnimation />
